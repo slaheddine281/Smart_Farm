@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.ProductionsController"
+      styleClass="view-container" spacing="15">
+
+    <!-- HEADER CARD -->
+    <HBox styleClass="card-header" alignment="CENTER_LEFT" spacing="15">
+        <Label text="📊  GESTION DES PRODUCTIONS" styleClass="view-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <!-- ✅ NOUVEAU — Bouton vers vue Visiteur -->
+        <Button text="👁  Vue Visiteur"
+                onAction="#handleGoToVisiteur"
+                styleClass="btn-visiteur"/>
+        <Button text="➕  Ajouter" onAction="#handleAdd" styleClass="btn-add"/>
+        <Button text="🔄  Actualiser" onAction="#handleRefresh" styleClass="btn-refresh"/>
+    </HBox>
+
+    <!-- RECHERCHE CARD -->
+    <HBox styleClass="search-card" spacing="12" alignment="CENTER_LEFT">
+        <Label text="🔍  Rechercher :" styleClass="search-label"/>
+        <TextField fx:id="searchField" onKeyReleased="#handleSearch"
+                   promptText="Type production..." prefWidth="220"
+                   styleClass="text-field"/>
+        <ComboBox fx:id="filterComboBox" onAction="#handleFilter"
+                  prefWidth="160" styleClass="combo-box"/>
+    </HBox>
+
+    <!-- TABLEAU -->
+    <TableView fx:id="productionsTable" VBox.vgrow="ALWAYS" styleClass="data-table">
+        <columns>
+            <TableColumn fx:id="colId" text="ID" prefWidth="65"/>
+            <TableColumn fx:id="colAnimalId" text="🐾 ID Animal" prefWidth="110"/>
+            <TableColumn fx:id="colType" text="🥛 Type" prefWidth="150"/>
+            <TableColumn fx:id="colQuantity" text="⚖️ Quantité" prefWidth="130"/>
+            <TableColumn fx:id="colDate" text="📅 Date" prefWidth="140"/>
+            <TableColumn fx:id="colActions" text="⚙️ Actions" prefWidth="210"/>
+        </columns>
+        <placeholder>
+            <Label text="Aucune production trouvée"
+                   style="-fx-text-fill: #BDC3C7; -fx-font-size: 16px;"/>
+        </placeholder>
+    </TableView>
+
+    <!-- STATISTIQUES -->
+    <HBox styleClass="stats-container" alignment="CENTER_LEFT" spacing="15">
+        <VBox styleClass="stat-card-green" spacing="5">
+            <Label text="TOTAL PRODUCTIONS" styleClass="stat-label-white"/>
+            <Label fx:id="lblTotal" text="0" styleClass="stat-value-white"/>
+        </VBox>
+        <VBox styleClass="stat-card" spacing="5">
+            <Label text="TOTAL LAIT (L)" styleClass="stat-label"/>
+            <Label fx:id="lblTotalLait" text="0.0" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card" spacing="5">
+            <Label text="TOTAL ŒUFS" styleClass="stat-label"/>
+            <Label fx:id="lblTotalOeufs" text="0" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card-blue" spacing="5">
+            <Label text="MOYENNE" styleClass="stat-label-white"/>
+            <Label fx:id="lblMoyenne" text="0.0" styleClass="stat-value-white"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+</VBox>

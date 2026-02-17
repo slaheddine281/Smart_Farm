@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.MainController"
+            styleClass="main-container">
+
+    <top>
+        <VBox styleClass="header">
+            <HBox alignment="CENTER" styleClass="header-content">
+                <Label text="🌱  SMART FARM" styleClass="header-title"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <left>
+        <VBox spacing="8" styleClass="sidebar">
+            <Label text="NAVIGATION" styleClass="sidebar-logo"/>
+            <Separator styleClass="sidebar-separator"/>
+
+            <Button text="🐮  Animaux"
+                    onAction="#showAnimalsView"
+                    styleClass="menu-btn"
+                    fx:id="btnAnimals"/>
+
+            <Button text="📊  Productions"
+                    onAction="#showProductionsView"
+                    styleClass="menu-btn"
+                    fx:id="btnProductions"/>
+
+            <Separator styleClass="sidebar-separator"/>
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Label text="v1.0 — Smart Farm" style="-fx-font-size: 11px; -fx-text-fill: #BDC3C7; -fx-padding: 5 0 0 10;"/>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane fx:id="contentArea" styleClass="content-area"/>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" styleClass="footer">
+            <Label fx:id="statusLabel" text="Prêt" styleClass="status-label"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

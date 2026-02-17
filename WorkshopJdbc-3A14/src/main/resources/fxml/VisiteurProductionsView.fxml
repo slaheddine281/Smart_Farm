@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.VisiteurProductionsController"
+      styleClass="view-container" spacing="15">
+
+    <!-- ══════════════════════════════════════════
+         HEADER
+    ══════════════════════════════════════════ -->
+    <HBox styleClass="card-header" alignment="CENTER_LEFT" spacing="15">
+        <Label text="👁  CATALOGUE DES PRODUCTIONS" styleClass="view-title-visiteur"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label text="MODE LECTURE SEULE" styleClass="badge-readonly"/>
+        <Button text="🔄  Actualiser" onAction="#handleRefresh" styleClass="btn-refresh"/>
+    </HBox>
+
+    <!-- ══════════════════════════════════════════
+         RECHERCHE
+    ══════════════════════════════════════════ -->
+    <HBox styleClass="search-card" spacing="12" alignment="CENTER_LEFT">
+        <Label text="🔍  Rechercher :" styleClass="search-label"/>
+        <TextField fx:id="searchField" onKeyReleased="#handleSearch"
+                   promptText="Type, quantité, date..." prefWidth="220"
+                   styleClass="text-field"/>
+        <ComboBox fx:id="filterComboBox" onAction="#handleFilter"
+                  prefWidth="160" styleClass="combo-box"/>
+    </HBox>
+
+    <!-- ══════════════════════════════════════════
+         ZONE PRINCIPALE : Tableau + Panier
+    ══════════════════════════════════════════ -->
+    <HBox spacing="15" VBox.vgrow="ALWAYS">
+
+        <!-- ── Tableau des productions ──────────── -->
+        <TableView fx:id="productionsTable"
+                   HBox.hgrow="ALWAYS"
+                   styleClass="data-table-visiteur">
+            <columns>
+                <TableColumn fx:id="colId"       text="ID"         prefWidth="55"/>
+                <TableColumn fx:id="colAnimalId" text="🐾 Animal"  prefWidth="90"/>
+                <TableColumn fx:id="colType"     text="🥛 Type"    prefWidth="120"/>
+                <TableColumn fx:id="colQuantity" text="⚖️ Stock"   prefWidth="100"/>
+                <TableColumn fx:id="colDate"     text="📅 Date"    prefWidth="110"/>
+                <TableColumn fx:id="colAcheter"  text="🛒 Acheter" prefWidth="190"/>
+            </columns>
+            <placeholder>
+                <Label text="Aucune production disponible"
+                       style="-fx-text-fill: #BDC3C7; -fx-font-size: 14px;"/>
+            </placeholder>
+        </TableView>
+
+        <!-- ── PANIER ───────────────────────────── -->
+        <VBox styleClass="panier-card" spacing="12" prefWidth="300" minWidth="280">
+
+            <!-- Titre -->
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label text="🛒" style="-fx-font-size: 20px;"/>
+                <Label text="MON PANIER" styleClass="panier-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblPanierCount" text="0 article(s)" styleClass="panier-count"/>
+            </HBox>
+
+            <Separator/>
+
+            <!-- ✅ CORRIGÉ : placeholder comme élément enfant, pas attribut -->
+            <ListView fx:id="panierListView" VBox.vgrow="ALWAYS" styleClass="panier-list">
+                <placeholder>
+                    <Label text="Votre panier est vide"
+                           style="-fx-text-fill: #BDC3C7; -fx-font-style: italic; -fx-font-size: 12px;"/>
+                </placeholder>
+            </ListView>
+
+            <Separator/>
+
+            <!-- Total -->
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="TOTAL :" styleClass="panier-total-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="lblPanierTotal" text="0.00 €" styleClass="panier-total-value"/>
+            </HBox>
+
+            <!-- Grille des prix -->
+            <VBox styleClass="prix-grid" spacing="4">
+                <Label text="💶 Tarifs en vigueur" styleClass="prix-titre"/>
+                <HBox spacing="6">
+                    <Label text="🥛 Lait :"      styleClass="prix-label" minWidth="80"/>
+                    <Label text="2.50 € / L"     styleClass="prix-value"/>
+                </HBox>
+                <HBox spacing="6">
+                    <Label text="🥚 Œufs :"     styleClass="prix-label" minWidth="80"/>
+                    <Label text="0.30 € / unité" styleClass="prix-value"/>
+                </HBox>
+                <HBox spacing="6">
+                    <Label text="🧶 Laine :"     styleClass="prix-label" minWidth="80"/>
+                    <Label text="8.00 € / kg"    styleClass="prix-value"/>
+                </HBox>
+                <HBox spacing="6">
+                    <Label text="🥩 Viande :"    styleClass="prix-label" minWidth="80"/>
+                    <Label text="12.00 € / kg"   styleClass="prix-value"/>
+                </HBox>
+            </VBox>
+
+            <!-- Boutons -->
+            <Button text="🗑  Supprimer sélection"
+                    onAction="#handleSupprimerDuPanier"
+                    styleClass="btn-panier-suppr"
+                    maxWidth="Infinity"/>
+            <Button text="✖  Vider le panier"
+                    onAction="#handleViderPanier"
+                    styleClass="btn-panier-vider"
+                    maxWidth="Infinity"/>
+            <Button text="✅  Valider la commande"
+                    onAction="#handleValiderCommande"
+                    styleClass="btn-panier-valider"
+                    maxWidth="Infinity"/>
+
+        </VBox>
+    </HBox>
+
+    <!-- ══════════════════════════════════════════
+         STATISTIQUES
+    ══════════════════════════════════════════ -->
+    <HBox styleClass="stats-container" alignment="CENTER_LEFT" spacing="15">
+        <VBox styleClass="stat-card-green" spacing="5">
+            <Label text="TOTAL PRODUCTIONS" styleClass="stat-label-white"/>
+            <Label fx:id="lblTotal" text="0" styleClass="stat-value-white"/>
+        </VBox>
+        <VBox styleClass="stat-card-outline-green" spacing="5">
+            <Label text="🥛 TOTAL LAIT"    styleClass="stat-label-green"/>
+            <Label fx:id="lblTotalLait"    text="0.0" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card-outline-green" spacing="5">
+            <Label text="🥚 TOTAL ŒUFS"   styleClass="stat-label-green"/>
+            <Label fx:id="lblTotalOeufs"   text="0"   styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat-card-outline-blue" spacing="5">
+            <Label text="🧶 TOTAL LAINE"  styleClass="stat-label-blue"/>
+            <Label fx:id="lblTotalLaine"  text="0.0" styleClass="stat-value-blue"/>
+        </VBox>
+        <VBox styleClass="stat-card-blue" spacing="5">
+            <Label text="🥩 TOTAL VIANDE" styleClass="stat-label-white"/>
+            <Label fx:id="lblTotalViande" text="0.0" styleClass="stat-value-white"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+</VBox>
