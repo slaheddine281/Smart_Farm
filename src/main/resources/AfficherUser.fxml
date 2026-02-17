@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.AfficherUser"
+      spacing="10" prefWidth="500" prefHeight="400"
+      style="-fx-padding: 15; -fx-background-color: #f9f9f9;">
+   <Label text="Liste des utilisateurs" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+   <ListView fx:id="userList" prefHeight="300" />
+</VBox>

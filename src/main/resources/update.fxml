@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.layout.HBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.UpdateUser"
+      spacing="15"
+      prefWidth="400" prefHeight="400"
+      style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-border-color: #bdc3c7; -fx-border-radius: 8;">
+
+    <Label text="Modifier un utilisateur"
+           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+
+    <Label text="Nom" />
+    <TextField fx:id="tfNom" promptText="Nom complet" />
+
+    <Label text="Email" />
+    <TextField fx:id="tfEmail" promptText="email@domaine.com" />
+
+    <Label text="Mot de passe" />
+    <PasswordField fx:id="tfPassword" promptText="Nouveau mot de passe" />
+
+    <Label text="Rôle" />
+    <ComboBox fx:id="cbRole" promptText="Sélectionner un rôle" />
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Enregistrer" onAction="#saveChanges"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white;" />
+        <Button text="Annuler" onAction="#onCancel"
+                style="-fx-background-color: #95a5a6; -fx-text-fill: white;" />
+    </HBox>
+</VBox>

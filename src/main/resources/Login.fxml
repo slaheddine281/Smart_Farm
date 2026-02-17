@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.LoginController"
+      spacing="20"
+      prefWidth="700" prefHeight="800"
+      style="-fx-background-color: #f5f7fa; -fx-padding: 30;"
+      alignment="CENTER">
+
+    <!-- Logo & Title -->
+    <ImageView fitWidth="120" fitHeight="120" preserveRatio="true">
+        <image>
+            <Image url="@image/smart_farm_logo.png" /> <!-- Optionnel : ajoutez un logo dans resources/ -->
+        </image>
+    </ImageView>
+
+    <Label text="Bienvenue dans Smart Farm"
+           style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+
+    <Label text="Gestion agricole intelligente"
+           style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;" />
+
+    <!-- Form -->
+    <VBox spacing="15" prefWidth="300">
+        <TextField fx:id="txtEmail" promptText="Email" />
+        <PasswordField fx:id="txtPassword" promptText="Mot de passe" />
+        <Button text="Se connecter" onAction="#handleLogin"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 16px;" />
+
+        <!-- Nouveau bouton "Créer un compte" -->
+        <Button text="Créer un compte" onAction="#openSignUpPage"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 16px;" />
+    </VBox>
+
+    <Label fx:id="lblError" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 14px;" />
+</VBox>

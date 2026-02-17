@@ -1,0 +1,51 @@
+.root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #f4f6f8;
+}
+
+/* Titre */
+.title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Labels */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #34495e;
+}
+
+/* Champs */
+.text-field, .combo-box {
+    -fx-pref-width: 260px;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #ccd1d9;
+}
+
+/* Bouton principal */
+.btn-primary {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 20 8 20;
+}
+
+/* Bouton secondaire */
+.btn-secondary {
+    -fx-background-color: #bdc3c7;
+    -fx-text-fill: #2c3e50;
+    -fx-background-radius: 6;
+    -fx-padding: 8 20 8 20;
+}
+
+/* Hover */
+.btn-primary:hover {
+    -fx-background-color: #2980b9;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #aab2b7;
+}
