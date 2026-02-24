@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AjouterEmploye"
+            prefWidth="700" prefHeight="700"
+            stylesheets="@modern-tech-style.css">
+
+   <top>
+      <VBox spacing="8" styleClass="tech-panel">
+         <padding>
+            <Insets top="18" right="25" bottom="18" left="25"/>
+         </padding>
+         <HBox alignment="CENTER_LEFT" spacing="12">
+            <Region styleClass="status-success" prefWidth="12" prefHeight="12"/>
+            <Label text="ADD NEW EMPLOYEE" styleClass="title-label"
+                   style="-fx-font-size: 20px;"/>
+         </HBox>
+         <Label text="Enter employee information below" styleClass="subtitle-label"
+                style="-fx-font-size: 13px; -fx-padding: 0 0 0 24px;"/>
+      </VBox>
+   </top>
+
+   <center>
+      <ScrollPane fitToWidth="true"
+                  style="-fx-background-color: transparent; -fx-background: transparent;">
+         <VBox spacing="15" alignment="TOP_CENTER">
+            <padding>
+               <Insets top="20" right="50" bottom="20" left="50"/>
+            </padding>
+
+            <!-- Personal Information -->
+            <VBox spacing="12" styleClass="card">
+               <Label text="📋 PERSONAL INFORMATION" styleClass="section-label"
+                      style="-fx-text-fill: #00c853; -fx-font-size: 13px;"/>
+
+               <VBox spacing="6">
+                  <Label text="First Name *"
+                         style="-fx-text-fill: #e6edf3; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                  <TextField fx:id="txtFirstName"
+                             promptText="Letters only..."
+                             prefHeight="40"/>
+                  <!-- Error label -->
+                  <Label fx:id="lblFirstNameError" text=""
+                         style="-fx-text-fill: #f44336; -fx-font-size: 11px;"/>
+               </VBox>
+
+               <VBox spacing="6">
+                  <Label text="Last Name *"
+                         style="-fx-text-fill: #e6edf3; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                  <TextField fx:id="txtLastName"
+                             promptText="Letters only..."
+                             prefHeight="40"/>
+                  <Label fx:id="lblLastNameError" text=""
+                         style="-fx-text-fill: #f44336; -fx-font-size: 11px;"/>
+               </VBox>
+            </VBox>
+
+            <!-- Contact Information -->
+            <VBox spacing="12" styleClass="card">
+               <Label text="📞 CONTACT INFORMATION" styleClass="section-label"
+                      style="-fx-text-fill: #1a73e8; -fx-font-size: 13px;"/>
+
+               <VBox spacing="6">
+                  <Label text="Phone Number *"
+                         style="-fx-text-fill: #e6edf3; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                  <TextField fx:id="txtPhone"
+                             promptText="8 digits only (e.g. 22334455)"
+                             prefHeight="40"/>
+                  <Label fx:id="lblPhoneError" text=""
+                         style="-fx-text-fill: #f44336; -fx-font-size: 11px;"/>
+               </VBox>
+
+               <VBox spacing="6">
+                  <Label text="Email Address"
+                         style="-fx-text-fill: #e6edf3; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                  <TextField fx:id="txtEmail"
+                             promptText="employee@company.com (optional)"
+                             prefHeight="40"/>
+               </VBox>
+            </VBox>
+
+            <!-- Job Information — NO Department -->
+            <VBox spacing="12" styleClass="card">
+               <Label text="💼 JOB INFORMATION" styleClass="section-label"
+                      style="-fx-text-fill: #00e676; -fx-font-size: 13px;"/>
+
+               <VBox spacing="6">
+                  <Label text="Position / Role *"
+                         style="-fx-text-fill: #e6edf3; -fx-font-weight: bold; -fx-font-size: 13px;"/>
+                  <ComboBox fx:id="cmbPosition"
+                            promptText="Select a position..."
+                            prefWidth="99999"
+                            prefHeight="40"/>
+                  <Label fx:id="lblPositionError" text=""
+                         style="-fx-text-fill: #f44336; -fx-font-size: 11px;"/>
+               </VBox>
+            </VBox>
+
+            <Label text="* Required fields"
+                   style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-style: italic;"/>
+         </VBox>
+      </ScrollPane>
+   </center>
+
+   <bottom>
+      <HBox spacing="12" alignment="CENTER"
+            style="-fx-background-color: #1e293b; -fx-border-color: #30363d;
+                   -fx-border-width: 1px 0 0 0; -fx-padding: 18px 30px;">
+         <Button text="✓  Add Employee"
+                 onAction="#addEmployee"
+                 styleClass="button-success"
+                 prefHeight="45" prefWidth="180"
+                 style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+         <Button text="↻  Clear Form"
+                 onAction="#clearForm"
+                 styleClass="button-secondary"
+                 prefHeight="45" prefWidth="140"
+                 style="-fx-font-size: 13px;"/>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Button text="← Back to List"
+                 onAction="#showList"
+                 prefHeight="45" prefWidth="150"
+                 style="-fx-font-size: 13px;"/>
+      </HBox>
+   </bottom>
+
+</BorderPane>

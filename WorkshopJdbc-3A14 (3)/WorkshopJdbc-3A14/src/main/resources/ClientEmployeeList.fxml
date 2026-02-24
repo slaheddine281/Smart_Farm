@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ClientEmployeeList"
+            prefWidth="1200" prefHeight="800"
+            stylesheets="@client-style.css">
+
+   <top>
+      <VBox styleClass="client-header">
+         <Label text="👥 Employee Directory" styleClass="client-title"/>
+         <Label text="View all employees and their information" styleClass="client-subtitle"/>
+      </VBox>
+   </top>
+
+   <center>
+      <VBox spacing="25">
+         <padding><Insets top="30" right="40" bottom="20" left="40"/></padding>
+
+         <!-- Search and Filters -->
+         <HBox spacing="15" alignment="CENTER_LEFT">
+            <TextField fx:id="txtSearch"
+                      promptText="🔍 Search employees..."
+                      prefWidth="400" prefHeight="45"/>
+            
+            <ComboBox fx:id="cmbFilterPosition"
+                     promptText="Filter by position"
+                     prefWidth="200" prefHeight="45"
+                     style="-fx-background-color: white; -fx-border-color: #e0e0e0;
+                            -fx-border-width: 2px; -fx-border-radius: 12px;
+                            -fx-background-radius: 12px;"/>
+            
+            <Region HBox.hgrow="ALWAYS"/>
+            
+            <Label fx:id="lblCount" text="0 employees"
+                   style="-fx-text-fill: #7f8c8d; -fx-font-size: 14px;"/>
+         </HBox>
+
+         <!-- Employee Grid (Cards) -->
+         <ScrollPane fitToWidth="true" fitToHeight="true"
+                    style="-fx-background-color: transparent; -fx-background: transparent;">
+            <FlowPane fx:id="employeeGrid" 
+                     hgap="20" vgap="20"
+                     prefWrapLength="1100"
+                     style="-fx-background-color: transparent;"/>
+         </ScrollPane>
+
+      </VBox>
+   </center>
+
+   <bottom>
+      <HBox spacing="15" alignment="CENTER_LEFT"
+            style="-fx-background-color: white; -fx-padding: 20px 40px;
+                   -fx-border-color: #e0e0e0; -fx-border-width: 1px 0 0 0;">
+         <Button text="← Back to Dashboard" onAction="#backToDashboard" styleClass="client-button"/>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Label text="Smart Farm © 2026" style="-fx-text-fill: #95a5a6; -fx-font-size: 12px;"/>
+      </HBox>
+   </bottom>
+
+</BorderPane>

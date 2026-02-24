@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.StatisticsController"
+            prefWidth="1100" prefHeight="750"
+            stylesheets="@modern-tech-style.css">
+
+   <top>
+      <VBox spacing="8" styleClass="tech-panel">
+         <padding>
+            <Insets top="20" right="30" bottom="20" left="30"/>
+         </padding>
+         <HBox alignment="CENTER_LEFT" spacing="12">
+            <Region styleClass="status-success" prefWidth="12" prefHeight="12"/>
+            <Label text="📊 WORKFORCE STATISTICS" styleClass="title-label"/>
+         </HBox>
+         <Label text="Real-time analytics and insights" styleClass="subtitle-label"
+                style="-fx-padding: 0 0 0 24px;"/>
+      </VBox>
+   </top>
+
+   <center>
+      <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+         <VBox spacing="20">
+            <padding>
+               <Insets top="25" right="30" bottom="20" left="30"/>
+            </padding>
+
+            <HBox spacing="20" alignment="CENTER">
+               <VBox spacing="8" styleClass="card" style="-fx-min-width: 240; -fx-alignment: center;">
+                  <Label text="👥 TOTAL EMPLOYEES" style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                  <Label fx:id="lblTotalEmployees" text="0" style="-fx-text-fill: #00c853; -fx-font-size: 42px; -fx-font-weight: bold;"/>
+               </VBox>
+
+               <VBox spacing="8" styleClass="card" style="-fx-min-width: 240; -fx-alignment: center;">
+                  <Label text="🌾 FARMERS" style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                  <Label fx:id="lblFarmers" text="0" style="-fx-text-fill: #00c853; -fx-font-size: 42px; -fx-font-weight: bold;"/>
+               </VBox>
+
+               <VBox spacing="8" styleClass="card" style="-fx-min-width: 240; -fx-alignment: center;">
+                  <Label text="🐾 VETERINARIANS" style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                  <Label fx:id="lblVeterinarians" text="0" style="-fx-text-fill: #1a73e8; -fx-font-size: 42px; -fx-font-weight: bold;"/>
+               </VBox>
+
+               <VBox spacing="8" styleClass="card" style="-fx-min-width: 240; -fx-alignment: center;">
+                  <Label text="💰 ACCOUNTANTS" style="-fx-text-fill: #8b949e; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                  <Label fx:id="lblAccountants" text="0" style="-fx-text-fill: #7c3aed; -fx-font-size: 42px; -fx-font-weight: bold;"/>
+               </VBox>
+            </HBox>
+
+            <HBox spacing="20" alignment="CENTER">
+               <VBox spacing="10" styleClass="card" HBox.hgrow="ALWAYS">
+                  <Label text="📊 Employees by Position" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                  <BarChart fx:id="barChart" prefHeight="300" legendVisible="false">
+                     <xAxis><CategoryAxis side="BOTTOM"/></xAxis>
+                     <yAxis><NumberAxis side="LEFT"/></yAxis>
+                  </BarChart>
+               </VBox>
+
+               <VBox spacing="10" styleClass="card" prefWidth="400">
+                  <Label text="🥧 Position Distribution" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                  <PieChart fx:id="pieChart" prefHeight="300"/>
+               </VBox>
+            </HBox>
+
+            <VBox spacing="10" styleClass="card">
+               <Label text="📋 All Employees" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+               <TableView fx:id="tableEmployees" prefHeight="200">
+                  <columns>
+                     <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+                     <TableColumn fx:id="colFirstName" text="FIRST NAME" prefWidth="200"/>
+                     <TableColumn fx:id="colLastName" text="LAST NAME" prefWidth="200"/>
+                     <TableColumn fx:id="colPhone" text="PHONE" prefWidth="150"/>
+                     <TableColumn fx:id="colPosition" text="POSITION" prefWidth="180"/>
+                  </columns>
+               </TableView>
+            </VBox>
+
+         </VBox>
+      </ScrollPane>
+   </center>
+
+   <bottom>
+      <HBox spacing="12" alignment="CENTER" style="-fx-background-color: #1e293b; -fx-border-color: #30363d; -fx-border-width: 1px 0 0 0; -fx-padding: 18px 30px;">
+         <Button text="↻ Refresh Data" onAction="#refreshData" styleClass="button-success" prefHeight="45" style="-fx-font-size: 13px; -fx-padding: 0 20px;"/>
+         <Button text="📤 Export Report" onAction="#exportReport" prefHeight="45" style="-fx-font-size: 13px; -fx-padding: 0 20px; -fx-background-color: #7c3aed; -fx-text-fill: white; -fx-background-radius: 8px;"/>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Button text="← Back to List" onAction="#backToList" styleClass="button-secondary" prefHeight="45" style="-fx-font-size: 13px; -fx-padding: 0 20px;"/>
+      </HBox>
+   </bottom>
+
+</BorderPane>

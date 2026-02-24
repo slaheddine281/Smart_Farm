@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ClientTaskView"
+            prefWidth="1200" prefHeight="800"
+            stylesheets="@client-style.css">
+
+   <top>
+      <VBox styleClass="client-header">
+         <Label text="📋 Task Overview" styleClass="client-title"/>
+         <Label text="Monitor employee tasks and assignments" styleClass="client-subtitle"/>
+      </VBox>
+   </top>
+
+   <center>
+      <VBox spacing="25">
+         <padding><Insets top="30" right="40" bottom="20" left="40"/></padding>
+
+         <!-- Statistics Row -->
+         <HBox spacing="20" alignment="CENTER">
+            <VBox spacing="8" styleClass="client-card" style="-fx-min-width: 250; -fx-alignment: center;">
+               <Label text="📊 TOTAL TASKS" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+               <Label fx:id="lblTotalTasks" text="0" styleClass="kpi-value"/>
+            </VBox>
+
+            <VBox spacing="8" styleClass="client-card" style="-fx-min-width: 250; -fx-alignment: center;">
+               <Label text="🗓️ TODAY'S TASKS" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+               <Label fx:id="lblTodayTasks" text="0" style="-fx-text-fill: #00c853; -fx-font-size: 36px; -fx-font-weight: bold;"/>
+            </VBox>
+
+            <VBox spacing="8" styleClass="client-card" style="-fx-min-width: 250; -fx-alignment: center;">
+               <Label text="📅 THIS WEEK" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+               <Label fx:id="lblWeekTasks" text="0" style="-fx-text-fill: #1a73e8; -fx-font-size: 36px; -fx-font-weight: bold;"/>
+            </VBox>
+         </HBox>
+
+         <!-- Search and Filter -->
+         <HBox spacing="15" alignment="CENTER_LEFT">
+            <TextField fx:id="txtSearch"
+                      promptText="🔍 Search tasks or employees..."
+                      prefWidth="500" prefHeight="45"/>
+            
+            <Region HBox.hgrow="ALWAYS"/>
+            
+            <Label fx:id="lblCount" text="0 tasks"
+                   style="-fx-text-fill: #7f8c8d; -fx-font-size: 14px;"/>
+         </HBox>
+
+         <!-- Tasks Table -->
+         <VBox spacing="0" styleClass="client-card" VBox.vgrow="ALWAYS">
+            <Label text="All Tasks" style="-fx-text-fill: #2c3e50; -fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 0 0 15 0;"/>
+            
+            <TableView fx:id="tableTasks" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="colEmployee" text="EMPLOYEE" prefWidth="280"/>
+                  <TableColumn fx:id="colDescription" text="TASK DESCRIPTION" prefWidth="450"/>
+                  <TableColumn fx:id="colDate" text="DATE" prefWidth="160"/>
+               </columns>
+            </TableView>
+         </VBox>
+
+      </VBox>
+   </center>
+
+   <bottom>
+      <HBox spacing="15" alignment="CENTER_LEFT"
+            style="-fx-background-color: white; -fx-padding: 20px 40px;
+                   -fx-border-color: #e0e0e0; -fx-border-width: 1px 0 0 0;">
+         <Button text="← Back to Dashboard" onAction="#backToDashboard" styleClass="client-button"/>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Label text="Smart Farm © 2026" style="-fx-text-fill: #95a5a6; -fx-font-size: 12px;"/>
+      </HBox>
+   </bottom>
+
+</BorderPane>

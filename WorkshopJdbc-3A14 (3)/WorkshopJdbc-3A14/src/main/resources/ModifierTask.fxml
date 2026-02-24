@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.ModifierTask"
+            prefWidth="650" prefHeight="520"
+            stylesheets="@modern-tech-style.css">
+
+    <top>
+        <VBox spacing="8" styleClass="tech-panel">
+            <padding><Insets top="18" right="25" bottom="18" left="25"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="12">
+                <Region styleClass="status-warning" prefWidth="12" prefHeight="12"/>
+                <Label text="EDIT TASK" styleClass="title-label"
+                       style="-fx-font-size: 20px;"/>
+            </HBox>
+            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 5 0 0 24px;">
+                <Label text="Task ID:" style="-fx-text-fill: #8b949e; -fx-font-size: 13px;"/>
+                <Label fx:id="lblTaskId" text="#0000"
+                       style="-fx-text-fill: #1a73e8; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="18" alignment="TOP_CENTER">
+            <padding>
+                <Insets top="30" right="60" bottom="20" left="60"/>
+            </padding>
+
+            <!-- Employee -->
+            <VBox spacing="10" styleClass="card">
+                <Label text="👤 EMPLOYEE" styleClass="section-label"
+                       style="-fx-text-fill: #00c853; -fx-font-size: 13px;"/>
+                <VBox spacing="6">
+                    <Label text="Select Employee *"
+                           style="-fx-text-fill: #e6edf3; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cmbEmployee"
+                              prefWidth="99999" prefHeight="42"/>
+                </VBox>
+            </VBox>
+
+            <!-- Task Details -->
+            <VBox spacing="10" styleClass="card">
+                <Label text="📋 TASK DETAILS" styleClass="section-label"
+                       style="-fx-text-fill: #1a73e8; -fx-font-size: 13px;"/>
+                <VBox spacing="6">
+                    <Label text="Task Description *"
+                           style="-fx-text-fill: #e6edf3; -fx-font-weight: bold;"/>
+                    <TextArea fx:id="txtDescription"
+                              prefHeight="90" wrapText="true"
+                              style="-fx-background-color: #1f2937; -fx-text-fill: #e6edf3;
+                                -fx-border-color: #30363d; -fx-border-radius: 8px;
+                                -fx-background-radius: 8px; -fx-font-size: 13px;
+                                -fx-padding: 10px;"/>
+                </VBox>
+                <VBox spacing="6">
+                    <Label text="Task Date *"
+                           style="-fx-text-fill: #e6edf3; -fx-font-weight: bold;"/>
+                    <DatePicker fx:id="dpTaskDate"
+                                prefWidth="99999" prefHeight="42"/>
+                </VBox>
+            </VBox>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="12" alignment="CENTER"
+              style="-fx-background-color: #1e293b; -fx-border-color: #30363d;
+                   -fx-border-width: 1px 0 0 0; -fx-padding: 18px 30px;">
+            <Button text="✓ Save Changes"
+                    onAction="#saveTask"
+                    styleClass="button-success"
+                    prefHeight="45" prefWidth="160"
+                    style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <Button text="↻ Reset"
+                    onAction="#resetForm"
+                    styleClass="button-secondary"
+                    prefHeight="45" prefWidth="120"
+                    style="-fx-font-size: 13px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="✕ Cancel"
+                    onAction="#cancel"
+                    styleClass="button-danger"
+                    prefHeight="45" prefWidth="130"
+                    style="-fx-font-size: 13px;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
