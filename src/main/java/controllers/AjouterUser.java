@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import services.ServiceUser;
+import utils.MyDatabase;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -21,7 +22,7 @@ public class AjouterUser {
     @FXML private ComboBox<String> comboRole;
     @FXML private ImageView imageView;
 
-    private final ServiceUser serviceUser = new ServiceUser();
+    private final ServiceUser serviceUser = new ServiceUser(MyDatabase.getInstance().getConnection());
     private String photoProfessionelle = "";
 
     @FXML

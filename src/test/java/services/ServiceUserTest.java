@@ -2,8 +2,9 @@ package services;
 
 import entities.User;
 import org.junit.jupiter.api.*;
+import utils.MyDatabase;
 
-        import java.sql.SQLException;
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +17,7 @@ class ServiceUserTest {
 
     @BeforeAll
     static void setUp() {
-        serviceUser = new ServiceUser();
+        serviceUser = new ServiceUser(MyDatabase.getInstance().getConnection());
         testUser = new User(
                 "testUser",
                 "test@email.com",

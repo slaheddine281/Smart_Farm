@@ -7,6 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
@@ -19,7 +20,7 @@
     <!-- Logo & Title -->
     <ImageView fitWidth="120" fitHeight="120" preserveRatio="true">
         <image>
-            <Image url="@image/smart_farm_logo.png" /> <!-- Optionnel : ajoutez un logo dans resources/ -->
+            <Image url="@image/smart_farm_logo.png" />
         </image>
     </ImageView>
 
@@ -32,9 +33,18 @@
     <!-- Form -->
     <VBox spacing="15" prefWidth="300">
         <TextField fx:id="txtEmail" promptText="Email" />
-        <PasswordField fx:id="txtPassword" promptText="Mot de passe" />
+
+        <HBox spacing="5">
+            <PasswordField fx:id="txtPassword" promptText="Mot de passe" prefWidth="240" />
+
+        </HBox>
+
         <Button text="Se connecter" onAction="#handleLogin"
                 style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 16px;" />
+
+        <Button fx:id="btnForgotPassword" text="Mot de passe oublié"
+                visible="false" onAction="#handleForgotPassword"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14px;" />
 
         <!-- Nouveau bouton "Créer un compte" -->
         <Button text="Créer un compte" onAction="#openSignUpPage"

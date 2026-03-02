@@ -2,6 +2,7 @@ package mains;
 
 import entities.User;
 import services.ServiceUser;
+import utils.MyDatabase;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -10,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        ServiceUser service = new ServiceUser();
+        ServiceUser service = new ServiceUser(MyDatabase.getInstance().getConnection());
 
         try {
             // 1. Afficher tous les utilisateurs présents dans la base

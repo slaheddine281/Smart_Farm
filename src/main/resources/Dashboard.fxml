@@ -22,6 +22,8 @@
                 style="-fx-background-color: #F44336; -fx-text-fill: white;" />
         <Button text="Déconnexion" onAction="#logout"
                 style="-fx-background-color: #2196F3; -fx-text-fill: white;" />
+        <Button text="💬 Chatbot" onAction="#openChatbot"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-min-width: 150;" />
     </HBox>
 
     <ListView fx:id="userList" prefHeight="300" />

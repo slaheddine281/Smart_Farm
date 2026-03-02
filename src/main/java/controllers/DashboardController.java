@@ -5,13 +5,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import services.ServiceUser;
+import utils.MyDatabase;
 
 import java.sql.SQLException;
 import java.util.List;
-
+import javafx.scene.control.Label;
 public class DashboardController {
 
     @FXML private ListView<User> userList;
@@ -21,7 +25,7 @@ public class DashboardController {
     private User currentUser;
     private User selectedUser;
 
-    private final ServiceUser serviceUser = new ServiceUser();
+    private final ServiceUser serviceUser = new ServiceUser(MyDatabase.getInstance().getConnection());
 
     @FXML
     public void initialize() {
@@ -34,8 +38,8 @@ public class DashboardController {
                 if (empty || user == null) {
                     setText(null);
                 } else {
-                    setText("ID: " + user.getId()
-                            + " | Nom: " + user.getUsername()
+                    setText(
+                             " Nom: " + user.getUsername()
                             + " | Email: " + user.getEmail()
                             + " | Rôle: " + user.getRole());
                 }
@@ -183,18 +187,40 @@ public class DashboardController {
     }
 
     @FXML
+
     void logout() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Login.fxml"));
             Parent root = loader.load();
 
-            Stage stage = (Stage) lblWelcome.getScene().getWindow();
+            // Utilisez userList au lieu de lblWelcome
+            Stage stage = (Stage) userList.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Connexion");
             stage.show();
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    @FXML
+    void openChatbot() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/chatbot.fxml"));
+            Parent root = loader.load(); // ✅ Maintenant valide
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Smart Farm — Assistant");
+            stage.setResizable(false);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(null);
+            alert.setContentText("Impossible d'ouvrir le chatbot :\n" + e.getMessage());
+            alert.showAndWait();
         }
     }
 }

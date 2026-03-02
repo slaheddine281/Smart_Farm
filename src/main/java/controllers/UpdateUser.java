@@ -6,15 +6,21 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import services.ServiceUser;
+import utils.MyDatabase;
 
 public class UpdateUser {
 
-    @FXML private TextField tfNom;
-    @FXML private TextField tfEmail;
-    @FXML private ComboBox<String> cbRole;
+    @FXML
+    private TextField tfNom;
+    @FXML
+    private TextField tfEmail;
+    @FXML
+    private PasswordField tfPassword;
+    @FXML
+    private ComboBox<String> cbRole;
 
     private User user;
-    private final ServiceUser serviceUser = new ServiceUser();
+    private final ServiceUser serviceUser = new ServiceUser(MyDatabase.getInstance().getConnection());
 
     @FXML
     public void initialize() {
@@ -23,8 +29,7 @@ public class UpdateUser {
                 "USER",
                 "EMPLOYER",
                 "FOURNISSEUR",
-                "VETERINAIRE"
-        );
+                "VETERINAIRE");
     }
 
     // appelé depuis DashboardController
@@ -32,9 +37,9 @@ public class UpdateUser {
         this.user = user;
         tfNom.setText(user.getUsername());
         tfEmail.setText(user.getEmail());
+        tfPassword.setText(""); // don't prefill the password for security
         cbRole.setValue(user.getRole());
     }
-
 
     @FXML
     void onSave() {
@@ -53,7 +58,11 @@ public class UpdateUser {
             user.setUsername(tfNom.getText());
             user.setEmail(tfEmail.getText());
             user.setRole(cbRole.getValue());
-
+            // Only update password if user typed a new one
+            String newPassword = tfPassword.getText();
+            if (!newPassword.isEmpty()) {
+                user.setPasswordHash(newPassword);
+            }
             serviceUser.modifier(user);
 
             showAlert(Alert.AlertType.INFORMATION,
@@ -74,17 +83,15 @@ public class UpdateUser {
         closeWindow();
     }
 
-
     @FXML
     public void saveChanges(ActionEvent actionEvent) {
-        onSave();   // délégation propre
+        onSave(); // délégation propre
     }
 
     @FXML
     public void cancel(ActionEvent actionEvent) {
         onCancel(); // délégation propre
     }
-
 
     private void closeWindow() {
         Stage stage = (Stage) tfNom.getScene().getWindow();

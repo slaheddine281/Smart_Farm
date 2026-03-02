@@ -1,0 +1,90 @@
+.root {
+    -fx-font-family: "Segoe UI";
+}
+
+/* LIGHT MODE */
+.light-mode {
+    -fx-background-color: #f5f7fa;
+}
+
+/* DARK MODE */
+.dark-mode {
+    -fx-background-color: #1e1e1e;
+}
+
+/* HEADER */
+.header {
+    -fx-padding: 18;
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+    -fx-background-color: linear-gradient(to right, #2ecc71, #27ae60);
+}
+
+.header-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.dark-toggle {
+    -fx-background-radius: 20;
+}
+
+/* CHAT */
+.chat-container {
+    -fx-padding: 20;
+}
+
+/* INPUT */
+.input-area {
+    -fx-padding: 15;
+    -fx-background-color: white;
+}
+
+.dark-mode .input-area {
+    -fx-background-color: #2c2c2c;
+}
+
+.message-field {
+    -fx-background-radius: 25;
+    -fx-padding: 10 18;
+    -fx-background-color: #eef2f7;
+}
+
+.dark-mode .message-field {
+    -fx-background-color: #3a3a3a;
+    -fx-text-fill: white;
+}
+
+.icon-button {
+    -fx-background-radius: 50;
+    -fx-padding: 8 12;
+}
+
+.send-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-background-radius: 25;
+    -fx-padding: 10 20;
+}
+
+.user-bubble {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-padding: 12 18;
+    -fx-background-radius: 20;
+    -fx-max-width: 420;
+}
+
+.bot-bubble {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 12 18;
+    -fx-background-radius: 20;
+    -fx-max-width: 420;
+}
+
+.dark-mode .bot-bubble {
+    -fx-background-color: #333;
+    -fx-text-fill: white;
+}

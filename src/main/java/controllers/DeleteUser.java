@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import services.ServiceUser;
+import utils.MyDatabase;
 
 import java.sql.SQLException;
 
@@ -15,7 +16,7 @@ public class DeleteUser {
     @FXML private Label lblRole;
 
     private User user;
-    private final ServiceUser serviceUser = new ServiceUser();
+    private final ServiceUser serviceUser = new ServiceUser(MyDatabase.getInstance().getConnection());
 
     public void setUser(User user) {
         this.user = user;
