@@ -161,7 +161,7 @@ public class AjouterEmploye {
             return;
         }
 
-        // ✅ Tous les champs sont valides → ajouter
+        // Tous les champs sont valides → ajouter
         Employee employee = new Employee();
         employee.setFirstName(txtFirstName.getText().trim());
         employee.setLastName(txtLastName.getText().trim());

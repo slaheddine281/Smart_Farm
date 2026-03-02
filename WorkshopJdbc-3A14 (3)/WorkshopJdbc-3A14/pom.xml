@@ -15,7 +15,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- ✅ TOUTES LES DÉPENDANCES DOIVENT ÊTRE ICI -->
+    <!-- TOUTES LES DÉPENDANCES -->
     <dependencies>
         <!-- JavaFX -->
         <dependency>
@@ -36,14 +36,13 @@
             <version>8.0.33</version>
         </dependency>
 
-        <!-- ✅ APACHE POI pour Excel - AJOUTEZ ICI -->
+        <!-- Apache POI pour Excel -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.5</version>
         </dependency>
-
-    </dependencies>  <!-- ← Cette balise ferme <dependencies> -->
+    </dependencies>
 
     <build>
         <plugins>
@@ -56,10 +55,31 @@
                     <target>17</target>
                 </configuration>
             </plugin>
+
+            <!-- ✅ PLUGIN JAVAFX avec DEUX CONFIGURATIONS -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
+                <executions>
+                    <!-- Configuration 1 : BACKOFFICE ADMIN -->
+                    <execution>
+                        <id>admin</id>
+                        <configuration>
+                            <mainClass>mains.MainFX</mainClass>
+                        </configuration>
+                    </execution>
+
+                    <!-- Configuration 2 : FRONTEND CLIENT -->
+                    <execution>
+                        <id>client</id>
+                        <configuration>
+                            <mainClass>mains.MainClient</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+                
+                <!-- Configuration par défaut (si vous faites juste "mvn javafx:run") -->
                 <configuration>
                     <mainClass>mains.MainFX</mainClass>
                 </configuration>
@@ -67,4 +87,4 @@
         </plugins>
     </build>
 
-</project>  <!-- ← Cette balise ferme <project> -->
+</project>

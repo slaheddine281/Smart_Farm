@@ -1,148 +1,200 @@
 package controllers;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import entities.Employee;
 import entities.EmployeeTask;
 import services.ServiceEmployee;
 import services.ServiceEmployeeTask;
 
+import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.ResourceBundle;
 
-public class AjouterTask {
+public class AjouterTask implements Initializable {
 
-    @FXML private ComboBox<String> cmbEmployee;
+    @FXML private ComboBox<Employee> cmbEmployee;
     @FXML private TextArea txtDescription;
-    @FXML private DatePicker dpTaskDate;
+    @FXML private DatePicker datePicker;
 
-    @FXML private Label lblEmployeeError;
-    @FXML private Label lblDescriptionError;
-    @FXML private Label lblDateError;
+    private final ServiceEmployee employeeService = new ServiceEmployee();
+    private final ServiceEmployeeTask taskService = new ServiceEmployeeTask();
 
-    private ServiceEmployeeTask service = new ServiceEmployeeTask();
-    private ServiceEmployee serviceEmployee = new ServiceEmployee();
-    private List<Employee> employees;
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        loadEmployees();
+        
+        // ✅ Définir la date par défaut à aujourd'hui
+        datePicker.setValue(LocalDate.now());
+        
+        // ✅ BLOQUER LES DATES PASSÉES
+        setupDateValidation();
+    }
 
-    @FXML
-    public void initialize() {
-        // Charger les employés dans le ComboBox
-        try {
-            employees = serviceEmployee.recuperer();
-            for (Employee emp : employees) {
-                cmbEmployee.getItems().add(
-                        emp.getId() + " - " + emp.getFirstName() + " " + emp.getLastName()
-                );
+    private void setupDateValidation() {
+        // Désactiver visuellement les dates passées dans le calendrier
+        datePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {
+            @Override
+            public DateCell call(DatePicker param) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate date, boolean empty) {
+                        super.updateItem(date, empty);
+                        
+                        // Désactiver toutes les dates avant aujourd'hui
+                        LocalDate today = LocalDate.now();
+                        if (date.isBefore(today)) {
+                            setDisable(true);
+                            setStyle("-fx-background-color: #30363d; -fx-text-fill: #6e7681;");
+                        }
+                    }
+                };
             }
+        });
+
+        // ✅ Validation supplémentaire au changement de valeur
+        datePicker.valueProperty().addListener((obs, oldDate, newDate) -> {
+            if (newDate != null && newDate.isBefore(LocalDate.now())) {
+                showAlert(Alert.AlertType.ERROR, "Invalid Date", 
+                    "You cannot select a date in the past!\nPlease select today or a future date.");
+                datePicker.setValue(LocalDate.now());
+            }
+        });
+    }
+
+    private void loadEmployees() {
+        try {
+            List<Employee> employees = employeeService.recuperer();
+            cmbEmployee.getItems().addAll(employees);
+            
+            // Afficher "Nom Prénom (Position)"
+            cmbEmployee.setCellFactory(param -> new ListCell<Employee>() {
+                @Override
+                protected void updateItem(Employee emp, boolean empty) {
+                    super.updateItem(emp, empty);
+                    if (empty || emp == null) {
+                        setText(null);
+                    } else {
+                        setText(emp.getFirstName() + " " + emp.getLastName() + 
+                               " (" + emp.getPosition() + ")");
+                    }
+                }
+            });
+            
+            cmbEmployee.setButtonCell(new ListCell<Employee>() {
+                @Override
+                protected void updateItem(Employee emp, boolean empty) {
+                    super.updateItem(emp, empty);
+                    if (empty || emp == null) {
+                        setText("Select an employee...");
+                    } else {
+                        setText(emp.getFirstName() + " " + emp.getLastName() + 
+                               " (" + emp.getPosition() + ")");
+                    }
+                }
+            });
+            
         } catch (SQLException e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", 
+                "Failed to load employees: " + e.getMessage());
         }
-
-        // Date par défaut = aujourd'hui
-        dpTaskDate.setValue(LocalDate.now());
-
-        // Validation en temps réel
-        txtDescription.textProperty().addListener((obs, o, n) -> validateDescription());
-        dpTaskDate.valueProperty().addListener((obs, o, n) -> validateDate());
-        cmbEmployee.valueProperty().addListener((obs, o, n) -> validateEmployee());
-    }
-
-    private boolean validateEmployee() {
-        if (cmbEmployee.getValue() == null) {
-            lblEmployeeError.setText("⚠ Please select an employee");
-            cmbEmployee.setStyle("-fx-border-color: #f44336; -fx-border-width: 2px; -fx-border-radius: 8px;");
-            return false;
-        }
-        lblEmployeeError.setText("");
-        cmbEmployee.setStyle("-fx-border-color: #00c853; -fx-border-width: 2px; -fx-border-radius: 8px;");
-        return true;
-    }
-
-    private boolean validateDescription() {
-        String val = txtDescription.getText().trim();
-        if (val.isEmpty()) {
-            lblDescriptionError.setText("⚠ Task description is required");
-            txtDescription.setStyle("-fx-border-color: #f44336; -fx-border-width: 2px; -fx-border-radius: 8px;");
-            return false;
-        } else if (val.length() < 5) {
-            lblDescriptionError.setText("⚠ Description too short (min 5 chars)");
-            txtDescription.setStyle("-fx-border-color: #f44336; -fx-border-width: 2px; -fx-border-radius: 8px;");
-            return false;
-        }
-        lblDescriptionError.setText("");
-        txtDescription.setStyle("-fx-border-color: #00c853; -fx-border-width: 2px; -fx-border-radius: 8px;");
-        return true;
-    }
-
-    private boolean validateDate() {
-        if (dpTaskDate.getValue() == null) {
-            lblDateError.setText("⚠ Please select a date");
-            return false;
-        }
-        lblDateError.setText("");
-        return true;
     }
 
     @FXML
     private void addTask() {
-        boolean ok = validateEmployee();
-        ok &= validateDescription();
-        ok &= validateDate();
+        // Validation de l'employé
+        if (cmbEmployee.getValue() == null) {
+            showAlert(Alert.AlertType.WARNING, "Validation Error", 
+                "Please select an employee!");
+            return;
+        }
 
-        if (!ok) return;
+        // Validation de la description
+        String description = txtDescription.getText().trim();
+        if (description.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Validation Error", 
+                "Please enter a task description!");
+            return;
+        }
+        
+        if (description.length() < 5) {
+            showAlert(Alert.AlertType.WARNING, "Validation Error", 
+                "Task description must be at least 5 characters long!");
+            return;
+        }
 
-        // Récupérer l'ID de l'employé sélectionné
-        String selected = cmbEmployee.getValue();
-        int employeeId = Integer.parseInt(selected.split(" - ")[0]);
+        // Validation de la date
+        LocalDate selectedDate = datePicker.getValue();
+        if (selectedDate == null) {
+            showAlert(Alert.AlertType.WARNING, "Validation Error", 
+                "Please select a date!");
+            return;
+        }
 
-        EmployeeTask task = new EmployeeTask(
-                employeeId,
-                txtDescription.getText().trim(),
-                dpTaskDate.getValue()
-        );
+        // ✅ VALIDATION FINALE : Vérifier que la date n'est pas dans le passé
+        if (selectedDate.isBefore(LocalDate.now())) {
+            showAlert(Alert.AlertType.ERROR, "Invalid Date", 
+                "Cannot create a task with a past date!\n" +
+                "Selected: " + selectedDate + "\n" +
+                "Today: " + LocalDate.now());
+            return;
+        }
 
+        // Créer la tâche
         try {
-            service.ajouter(task);
-            showSuccess("Task added successfully! ✅");
+            Employee selectedEmployee = cmbEmployee.getValue();
+            EmployeeTask task = new EmployeeTask(
+                selectedEmployee.getId(),
+                description,
+                selectedDate
+            );
+            task.setRating(0); // Rating par défaut = 0 (non noté)
+            
+            taskService.ajouter(task);
+            
+            showAlert(Alert.AlertType.INFORMATION, "Success", 
+                "Task added successfully!\n\n" +
+                "Employee: " + selectedEmployee.getFirstName() + " " + selectedEmployee.getLastName() + "\n" +
+                "Date: " + selectedDate);
+            
             clearForm();
+            closeWindow();
+            
         } catch (SQLException e) {
             e.printStackTrace();
-            showError("Failed to add task: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Database Error", 
+                "Failed to add task: " + e.getMessage());
         }
     }
 
     @FXML
     private void clearForm() {
-        cmbEmployee.getSelectionModel().clearSelection();
+        cmbEmployee.setValue(null);
         txtDescription.clear();
-        dpTaskDate.setValue(LocalDate.now());
-        lblEmployeeError.setText("");
-        lblDescriptionError.setText("");
-        lblDateError.setText("");
-        cmbEmployee.setStyle("");
-        txtDescription.setStyle("");
+        datePicker.setValue(LocalDate.now()); // Reset à aujourd'hui
     }
 
     @FXML
     private void cancel() {
-        ((Stage) txtDescription.getScene().getWindow()).close();
+        closeWindow();
     }
 
-    private void showSuccess(String msg) {
-        Alert a = new Alert(Alert.AlertType.INFORMATION);
-        a.setTitle("✅ Success");
-        a.setHeaderText(null);
-        a.setContentText(msg);
-        a.showAndWait();
+    private void closeWindow() {
+        Stage stage = (Stage) cmbEmployee.getScene().getWindow();
+        stage.close();
     }
 
-    private void showError(String msg) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setTitle("❌ Error");
-        a.setHeaderText(null);
-        a.setContentText(msg);
-        a.showAndWait();
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

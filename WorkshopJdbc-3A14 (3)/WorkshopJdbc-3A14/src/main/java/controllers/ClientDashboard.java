@@ -44,17 +44,24 @@ public class ClientDashboard implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        System.out.println("===========================================");
+        System.out.println("✅ ClientDashboard initialization started");
+        System.out.println("===========================================");
+        
         // Table setup
         colTaskEmployee.setCellValueFactory(new PropertyValueFactory<>("employeeDisplay"));
         colTaskDescription.setCellValueFactory(new PropertyValueFactory<>("taskDescription"));
         colTaskDate.setCellValueFactory(new PropertyValueFactory<>("taskDate"));
 
         loadDashboardData();
+        
+        System.out.println("✅ ClientDashboard ready!");
     }
 
     private void loadDashboardData() {
         try {
-            // Load employees
+            System.out.println("📊 Loading employees...");
+            
             ObservableList<Employee> employees = FXCollections.observableArrayList(
                 employeeService.recuperer()
             );
@@ -71,29 +78,43 @@ public class ClientDashboard implements Initializable {
             lblFarmers.setText(String.valueOf(farmers));
             lblVeterinarians.setText(String.valueOf(vets));
             lblAccountants.setText(String.valueOf(accountants));
+            
+            System.out.println("✅ Employees: " + employees.size() + 
+                             " (Farmers: " + farmers + 
+                             ", Vets: " + vets + 
+                             ", Accountants: " + accountants + ")");
 
             // Update charts
             updateBarChart(farmers, vets, accountants);
             updatePieChart(farmers, vets, accountants);
+            
+            System.out.println("✅ Charts updated");
 
-            // Load recent tasks (limit to 5)
+            // Load recent tasks
+            System.out.println("📋 Loading tasks...");
             ObservableList<EmployeeTask> tasks = FXCollections.observableArrayList(
                 taskService.recuperer()
             );
+            
+            int limit = Math.min(5, tasks.size());
             ObservableList<EmployeeTask> recentTasks = FXCollections.observableArrayList(
-                tasks.subList(0, Math.min(5, tasks.size()))
+                tasks.subList(0, limit)
             );
             tableRecentTasks.setItems(recentTasks);
+            
+            System.out.println("✅ Tasks loaded: " + recentTasks.size());
 
         } catch (SQLException e) {
+            System.err.println("❌ Database error:");
             e.printStackTrace();
-            showAlert("Error", "Failed to load dashboard data");
+            showAlert("Error", "Failed to load data: " + e.getMessage());
         }
     }
 
     private void updateBarChart(long farmers, long vets, long accountants) {
         barChart.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
+        series.setName("Employees");
         series.getData().add(new XYChart.Data<>("Farmer", farmers));
         series.getData().add(new XYChart.Data<>("Veterinarian", vets));
         series.getData().add(new XYChart.Data<>("Accountant", accountants));
@@ -112,34 +133,56 @@ public class ClientDashboard implements Initializable {
 
     @FXML
     private void viewEmployees() {
+        System.out.println("🔄 Opening employee list...");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ClientEmployeeList.fxml"));
+            URL fxmlUrl = getClass().getResource("/ClientEmployeeList.fxml");
+            if (fxmlUrl == null) {
+                System.err.println("❌ ClientEmployeeList.fxml not found!");
+                showAlert("Error", "Employee list view not found!");
+                return;
+            }
+            
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
             Stage stage = (Stage) lblTotalEmployees.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Employee Directory");
+            System.out.println("✅ Navigation successful");
+            
         } catch (IOException e) {
+            System.err.println("❌ Navigation error:");
             e.printStackTrace();
-            showAlert("Error", "Failed to open employee list");
+            showAlert("Error", "Failed to open employee list: " + e.getMessage());
         }
     }
 
     @FXML
     private void viewTasks() {
+        System.out.println("🔄 Opening task view...");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ClientTaskView.fxml"));
+            URL fxmlUrl = getClass().getResource("/ClientTaskView.fxml");
+            if (fxmlUrl == null) {
+                System.err.println("❌ ClientTaskView.fxml not found!");
+                showAlert("Error", "Task view not found!");
+                return;
+            }
+            
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
             Stage stage = (Stage) lblTotalEmployees.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Task Overview");
+            System.out.println("✅ Navigation successful");
+            
         } catch (IOException e) {
+            System.err.println("❌ Navigation error:");
             e.printStackTrace();
-            showAlert("Error", "Failed to open task view");
+            showAlert("Error", "Failed to open task view: " + e.getMessage());
         }
     }
 
     private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

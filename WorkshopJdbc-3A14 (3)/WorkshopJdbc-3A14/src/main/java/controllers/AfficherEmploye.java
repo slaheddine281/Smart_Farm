@@ -223,7 +223,7 @@ public class AfficherEmploye implements Initializable {
             lblLastUpdate.setText("Just now");
     }
 
-    // ✅ NOUVELLE MÉTHODE — Ouvre la page Statistics complète
+    //  NOUVELLE MÉTHODE — Ouvre la page Statistics complète
     @FXML
     private void showStatistics() {
         try {
@@ -244,7 +244,7 @@ public class AfficherEmploye implements Initializable {
                 .count();
     }
 
-    // ✅ NOUVELLE MÉTHODE — Export Excel avec dialogue
+    //  NOUVELLE MÉTHODE — Export Excel avec dialogue
     @FXML
     private void exportData() {
         try {

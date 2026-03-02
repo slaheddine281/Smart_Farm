@@ -5,10 +5,13 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import entities.EmployeeTask;
 import services.ServiceEmployeeTask;
@@ -22,14 +25,17 @@ import java.util.ResourceBundle;
 
 public class AfficherTasks implements Initializable {
 
-    @FXML private TableView<EmployeeTask>              tableTask;
-    @FXML private TableColumn<EmployeeTask, String>    colEmployeeName;    // ✅ CHANGÉ - String au lieu de Integer
-    @FXML private TableColumn<EmployeeTask, String>    colDescription;
+    @FXML private TableView<EmployeeTask> tableTask;
+    @FXML private TableColumn<EmployeeTask, String> colEmployeeName;
+    @FXML private TableColumn<EmployeeTask, String> colDescription;
     @FXML private TableColumn<EmployeeTask, LocalDate> colDate;
+    @FXML private TableColumn<EmployeeTask, Void> colRating;
+    @FXML private TableColumn<EmployeeTask, Void> colActions;
 
-    @FXML private Label     lblTotalTasks;
-    @FXML private Label     lblTodayTasks;
-    @FXML private Label     lblLastUpdate;
+    @FXML private Label lblTotalTasks;
+    @FXML private Label lblTodayTasks;
+    @FXML private Label lblAvgRating;
+    @FXML private Label lblLastUpdate;
     @FXML private TextField txtSearch;
 
     private final ServiceEmployeeTask service = new ServiceEmployeeTask();
@@ -37,10 +43,12 @@ public class AfficherTasks implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // ✅ CHANGÉ - colEmployeeName utilise maintenant getEmployeeDisplay()
         colEmployeeName.setCellValueFactory(new PropertyValueFactory<>("employeeDisplay"));
         colDescription.setCellValueFactory(new PropertyValueFactory<>("taskDescription"));
         colDate.setCellValueFactory(new PropertyValueFactory<>("taskDate"));
+
+        setupRatingColumn();
+        setupActionsColumn();
 
         if (txtSearch != null) {
             txtSearch.textProperty().addListener(
@@ -49,6 +57,129 @@ public class AfficherTasks implements Initializable {
         }
 
         refreshTable();
+    }
+
+    private void setupRatingColumn() {
+        colRating.setCellFactory(param -> new TableCell<>() {
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    EmployeeTask task = getTableView().getItems().get(getIndex());
+                    Label ratingLabel = new Label(task.getRatingStars());
+                    ratingLabel.setStyle("-fx-text-fill: #e6edf3; -fx-font-size: 13px;");
+                    setGraphic(ratingLabel);
+                }
+            }
+        });
+    }
+
+    private void setupActionsColumn() {
+        colActions.setCellFactory(param -> new TableCell<>() {
+            private final Button btnRate = new Button("⭐ Rate");
+
+            {
+                btnRate.setStyle(
+                    "-fx-background-color: #ff9800; -fx-text-fill: white; " +
+                    "-fx-font-size: 11px; -fx-padding: 6px 14px; " +
+                    "-fx-background-radius: 8px; -fx-cursor: hand; " +
+                    "-fx-font-weight: bold;"
+                );
+                
+                btnRate.setOnAction(event -> {
+                    EmployeeTask task = getTableView().getItems().get(getIndex());
+                    showRatingDialog(task);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    HBox box = new HBox(btnRate);
+                    box.setAlignment(Pos.CENTER);
+                    setGraphic(box);
+                }
+            }
+        });
+    }
+
+    private void showRatingDialog(EmployeeTask task) {
+        Dialog<Integer> dialog = new Dialog<>();
+        dialog.setTitle("Rate Task Performance");
+        dialog.setHeaderText("Employee: " + task.getEmployeeName() + "\nTask: " + task.getTaskDescription());
+
+        ButtonType submitButtonType = new ButtonType("Submit Rating", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(submitButtonType, ButtonType.CANCEL);
+
+        HBox ratingBox = new HBox(12);
+        ratingBox.setAlignment(Pos.CENTER);
+        ratingBox.setStyle("-fx-padding: 25px;");
+
+        final int[] selectedRating = {task.getRating()};
+
+        for (int i = 1; i <= 5; i++) {
+            final int rating = i;
+            Button starBtn = new Button(i + " ⭐");
+            starBtn.setPrefSize(70, 50);
+            starBtn.setStyle(
+                "-fx-font-size: 15px; -fx-font-weight: bold; " +
+                "-fx-background-radius: 10px; -fx-cursor: hand; " +
+                (i == task.getRating() ? 
+                    "-fx-background-color: #ff9800; -fx-text-fill: white;" : 
+                    "-fx-background-color: #30363d; -fx-text-fill: #8b949e;")
+            );
+            
+            starBtn.setOnAction(e -> {
+                selectedRating[0] = rating;
+                for (javafx.scene.Node node : ratingBox.getChildren()) {
+                    if (node instanceof Button) {
+                        Button btn = (Button) node;
+                        btn.setStyle(
+                            "-fx-font-size: 15px; -fx-font-weight: bold; " +
+                            "-fx-background-radius: 10px; -fx-cursor: hand; " +
+                            (btn == starBtn ? 
+                                "-fx-background-color: #ff9800; -fx-text-fill: white;" : 
+                                "-fx-background-color: #30363d; -fx-text-fill: #8b949e;")
+                        );
+                    }
+                }
+            });
+            
+            ratingBox.getChildren().add(starBtn);
+        }
+
+        VBox content = new VBox(15);
+        content.setAlignment(Pos.CENTER);
+        content.getChildren().addAll(
+            new Label("Select performance rating:"),
+            ratingBox
+        );
+        dialog.getDialogPane().setContent(content);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == submitButtonType) {
+                return selectedRating[0];
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(rating -> {
+            try {
+                service.updateRating(task.getId(), rating);
+                task.setRating(rating);
+                tableTask.refresh();
+                updateStatistics();
+                showAlert("Success", "Task rated with " + rating + " stars! ⭐");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert("Error", "Failed to update rating: " + e.getMessage());
+            }
+        });
     }
 
     @FXML
@@ -60,7 +191,7 @@ public class AfficherTasks implements Initializable {
             updateStatistics();
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de charger les tâches : " + e.getMessage());
+            showAlert("Error", "Failed to load tasks: " + e.getMessage());
         }
     }
 
@@ -76,11 +207,19 @@ public class AfficherTasks implements Initializable {
             lblTodayTasks.setText(String.valueOf(todayCount));
         }
 
+        if (lblAvgRating != null) {
+            double avgRating = data.stream()
+                .filter(t -> t.getRating() > 0)
+                .mapToInt(EmployeeTask::getRating)
+                .average()
+                .orElse(0.0);
+            lblAvgRating.setText(String.format("%.1f", avgRating));
+        }
+
         if (lblLastUpdate != null)
             lblLastUpdate.setText("Just now");
     }
 
-    // ✅ AMÉLIORÉ - Recherche par nom, position et description
     private void filterTable(String search) {
         if (search == null || search.isEmpty()) {
             tableTask.setItems(data);
@@ -104,9 +243,7 @@ public class AfficherTasks implements Initializable {
     private void addNewTask() {
         URL fxmlUrl = getClass().getResource("/AjouterTask.fxml");
         if (fxmlUrl == null) {
-            showAlert("Erreur",
-                "Fichier AjouterTask.fxml introuvable !\n" +
-                "Verifiez qu'il est dans src/main/resources/");
+            showAlert("Error", "AjouterTask.fxml not found!");
             return;
         }
         try {
@@ -119,7 +256,7 @@ public class AfficherTasks implements Initializable {
             refreshTable();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible d'ouvrir le formulaire : " + e.getMessage());
+            showAlert("Error", "Failed to open form: " + e.getMessage());
         }
     }
 
@@ -127,14 +264,12 @@ public class AfficherTasks implements Initializable {
     private void editTask() {
         EmployeeTask selected = tableTask.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showAlert("Attention", "Veuillez selectionner une tache a modifier");
+            showAlert("Warning", "Please select a task to edit");
             return;
         }
         URL fxmlUrl = getClass().getResource("/ModifierTask.fxml");
         if (fxmlUrl == null) {
-            showAlert("Erreur",
-                "Fichier ModifierTask.fxml introuvable !\n" +
-                "Verifiez qu'il est dans src/main/resources/");
+            showAlert("Error", "ModifierTask.fxml not found!");
             return;
         }
         try {
@@ -149,7 +284,7 @@ public class AfficherTasks implements Initializable {
             refreshTable();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible d'ouvrir le formulaire : " + e.getMessage());
+            showAlert("Error", "Failed to open form: " + e.getMessage());
         }
     }
 
@@ -157,23 +292,23 @@ public class AfficherTasks implements Initializable {
     private void deleteTask() {
         EmployeeTask selected = tableTask.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showAlert("Attention", "Veuillez selectionner une tache a supprimer");
+            showAlert("Warning", "Please select a task to delete");
             return;
         }
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Delete Task");
-        confirm.setContentText("Supprimer cette tache ?\n" + selected.getTaskDescription());
+        confirm.setContentText("Delete this task?\n" + selected.getTaskDescription());
 
         Optional<ButtonType> result = confirm.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 service.supprimer(selected);
                 refreshTable();
-                showAlert("Succes", "Tache supprimee avec succes !");
+                showAlert("Success", "Task deleted successfully!");
             } catch (SQLException e) {
                 e.printStackTrace();
-                showAlert("Erreur", "Impossible de supprimer : " + e.getMessage());
+                showAlert("Error", "Failed to delete: " + e.getMessage());
             }
         }
     }
@@ -182,7 +317,7 @@ public class AfficherTasks implements Initializable {
     private void backToEmployees() {
         URL fxmlUrl = getClass().getResource("/AfficherEmploye.fxml");
         if (fxmlUrl == null) {
-            showAlert("Erreur", "Fichier AfficherEmploye.fxml introuvable !");
+            showAlert("Error", "AfficherEmploye.fxml not found!");
             return;
         }
         try {
@@ -193,7 +328,7 @@ public class AfficherTasks implements Initializable {
             stage.setTitle("Employee Management System");
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Erreur", "Impossible de retourner a la liste");
+            showAlert("Error", "Navigation failed");
         }
     }
 

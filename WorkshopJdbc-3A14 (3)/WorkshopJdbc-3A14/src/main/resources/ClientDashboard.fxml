@@ -13,8 +13,8 @@
 
    <top>
       <VBox styleClass="client-header">
-         <Label text="🌾 Smart Farm Portal" styleClass="client-title"/>
-         <Label text="Employee & Task Management System" styleClass="client-subtitle"/>
+         <Label text="Smart Farm Portal" styleClass="client-title"/>
+         <Label text="Employee and Task Management System" styleClass="client-subtitle"/>
       </VBox>
    </top>
 
@@ -23,33 +23,31 @@
          <VBox spacing="25">
             <padding><Insets top="30" right="40" bottom="30" left="40"/></padding>
 
-            <!-- KPI Cards -->
             <HBox spacing="20" alignment="CENTER">
                <VBox spacing="10" styleClass="client-card" style="-fx-min-width: 260; -fx-alignment: center;">
-                  <Label text="👥 TOTAL EMPLOYEES" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                  <Label text="TOTAL EMPLOYEES" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
                   <Label fx:id="lblTotalEmployees" text="0" styleClass="kpi-value"/>
                </VBox>
 
                <VBox spacing="10" styleClass="client-card" style="-fx-min-width: 260; -fx-alignment: center;">
-                  <Label text="🌾 FARMERS" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                  <Label text="FARMERS" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
                   <Label fx:id="lblFarmers" text="0" style="-fx-text-fill: #00c853; -fx-font-size: 36px; -fx-font-weight: bold;"/>
                </VBox>
 
                <VBox spacing="10" styleClass="client-card" style="-fx-min-width: 260; -fx-alignment: center;">
-                  <Label text="🐾 VETERINARIANS" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                  <Label text="VETERINARIANS" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
                   <Label fx:id="lblVeterinarians" text="0" style="-fx-text-fill: #1a73e8; -fx-font-size: 36px; -fx-font-weight: bold;"/>
                </VBox>
 
                <VBox spacing="10" styleClass="client-card" style="-fx-min-width: 260; -fx-alignment: center;">
-                  <Label text="💰 ACCOUNTANTS" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                  <Label text="ACCOUNTANTS" style="-fx-text-fill: #7f8c8d; -fx-font-size: 12px; -fx-font-weight: bold;"/>
                   <Label fx:id="lblAccountants" text="0" style="-fx-text-fill: #7c3aed; -fx-font-size: 36px; -fx-font-weight: bold;"/>
                </VBox>
             </HBox>
 
-            <!-- Charts Row -->
             <HBox spacing="20">
                <VBox spacing="10" styleClass="client-card" HBox.hgrow="ALWAYS">
-                  <Label text="📊 Employees by Position" style="-fx-text-fill: #2c3e50; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                  <Label text="Employees by Position" style="-fx-text-fill: #2c3e50; -fx-font-size: 16px; -fx-font-weight: bold;"/>
                   <BarChart fx:id="barChart" prefHeight="280" legendVisible="false">
                      <xAxis><CategoryAxis/></xAxis>
                      <yAxis><NumberAxis/></yAxis>
@@ -57,14 +55,13 @@
                </VBox>
 
                <VBox spacing="10" styleClass="client-card" prefWidth="400">
-                  <Label text="🥧 Distribution" style="-fx-text-fill: #2c3e50; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                  <Label text="Distribution" style="-fx-text-fill: #2c3e50; -fx-font-size: 16px; -fx-font-weight: bold;"/>
                   <PieChart fx:id="pieChart" prefHeight="280"/>
                </VBox>
             </HBox>
 
-            <!-- Recent Tasks -->
             <VBox spacing="15" styleClass="client-card">
-               <Label text="📋 Recent Tasks" style="-fx-text-fill: #2c3e50; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+               <Label text="Recent Tasks" style="-fx-text-fill: #2c3e50; -fx-font-size: 18px; -fx-font-weight: bold;"/>
                <TableView fx:id="tableRecentTasks" prefHeight="200">
                   <columns>
                      <TableColumn fx:id="colTaskEmployee" text="EMPLOYEE" prefWidth="250"/>
@@ -80,10 +77,10 @@
 
    <bottom>
       <HBox spacing="15" alignment="CENTER" style="-fx-background-color: white; -fx-padding: 20px 40px; -fx-border-color: #e0e0e0; -fx-border-width: 1px 0 0 0;">
-         <Button text="👥 View All Employees" onAction="#viewEmployees" styleClass="client-button"/>
-         <Button text="📋 View All Tasks" onAction="#viewTasks" styleClass="client-button"/>
+         <Button text="View All Employees" onAction="#viewEmployees" styleClass="client-button"/>
+         <Button text="View All Tasks" onAction="#viewTasks" styleClass="client-button"/>
          <Region HBox.hgrow="ALWAYS"/>
-         <Label text="Smart Farm © 2026" style="-fx-text-fill: #95a5a6; -fx-font-size: 12px;"/>
+         <Label text="Smart Farm 2026" style="-fx-text-fill: #95a5a6; -fx-font-size: 12px;"/>
       </HBox>
    </bottom>
 

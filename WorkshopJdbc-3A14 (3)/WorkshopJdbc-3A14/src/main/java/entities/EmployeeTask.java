@@ -1,4 +1,6 @@
-package entities;
+
+
+        package entities;
 
 import java.time.LocalDate;
 
@@ -6,10 +8,11 @@ public class EmployeeTask {
 
     private int id;
     private int employeeId;
-    private String employeeName;      // ✅ NOUVEAU - Nom complet de l'employé
-    private String employeePosition;  // ✅ NOUVEAU - Position de l'employé
+    private String employeeName;
+    private String employeePosition;
     private String taskDescription;
     private LocalDate taskDate;
+    private int rating; // ✅ NOUVEAU - Rating 0-5 étoiles
 
     // ── Constructeurs ──────────────────────────────
     public EmployeeTask() {}
@@ -19,15 +22,17 @@ public class EmployeeTask {
         this.employeeId = employeeId;
         this.taskDescription = taskDescription;
         this.taskDate = taskDate;
+        this.rating = 0; // Par défaut non noté
     }
 
     public EmployeeTask(int employeeId, String taskDescription, LocalDate taskDate) {
         this.employeeId = employeeId;
         this.taskDescription = taskDescription;
         this.taskDate = taskDate;
+        this.rating = 0;
     }
 
-    // ── Getters & Setters existants ───────────────
+    // ── Getters & Setters ──────────────────────────
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -40,14 +45,36 @@ public class EmployeeTask {
     public LocalDate getTaskDate() { return taskDate; }
     public void setTaskDate(LocalDate taskDate) { this.taskDate = taskDate; }
 
-    // ── NOUVEAUX Getters & Setters ────────────────
     public String getEmployeeName() { return employeeName; }
     public void setEmployeeName(String employeeName) { this.employeeName = employeeName; }
 
     public String getEmployeePosition() { return employeePosition; }
     public void setEmployeePosition(String employeePosition) { this.employeePosition = employeePosition; }
 
-    // ✅ Méthode utile pour l'affichage dans la TableView
+    // ✅ NOUVEAU - Rating
+    public int getRating() { return rating; }
+    public void setRating(int rating) {
+        if (rating >= 0 && rating <= 5) {
+            this.rating = rating;
+        }
+    }
+
+    // ✅ Méthode pour afficher les étoiles visuellement
+    public String getRatingStars() {
+        if (rating == 0) return "☆☆☆☆☆ (Not rated)";
+
+        StringBuilder stars = new StringBuilder();
+        for (int i = 1; i <= 5; i++) {
+            if (i <= rating) {
+                stars.append("⭐");
+            } else {
+                stars.append("☆");
+            }
+        }
+        return stars.toString();
+    }
+
+    // ✅ Méthode utile pour l'affichage
     public String getEmployeeDisplay() {
         if (employeeName != null && employeePosition != null) {
             return employeeName + " (" + employeePosition + ")";
@@ -61,6 +88,18 @@ public class EmployeeTask {
     @Override
     public String toString() {
         return "Task{id=" + id + ", employee='" + employeeName +
-                "', description='" + taskDescription + "', date=" + taskDate + "}";
+                "', description='" + taskDescription +
+                "', date=" + taskDate +
+                ", rating=" + rating + "/5}";
     }
 }
+
+
+
+
+
+
+
+
+
+
