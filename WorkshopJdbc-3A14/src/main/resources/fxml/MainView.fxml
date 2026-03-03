@@ -31,6 +31,16 @@
                     styleClass="menu-btn"
                     fx:id="btnProductions"/>
 
+            <Button text="🤖  Rapport IA"
+                    onAction="#showRapportView"
+                    styleClass="menu-btn"
+                    fx:id="btnRapport"/>
+
+            <Button text="📈  Statistiques"
+                    onAction="#showStatistiquesView"
+                    styleClass="menu-btn"
+                    fx:id="btnStats"/>
+
             <Separator styleClass="sidebar-separator"/>
             <Region VBox.vgrow="ALWAYS"/>
 

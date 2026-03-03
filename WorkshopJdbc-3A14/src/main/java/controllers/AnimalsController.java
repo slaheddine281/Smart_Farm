@@ -49,6 +49,7 @@ public class AnimalsController {
 
         setupActionsColumn();
 
+        // ✅ MODIFIÉ : Liste sans "Cheval"
         filterComboBox.setItems(FXCollections.observableArrayList(
                 "Tous", "Vache", "Chèvre", "Mouton", "Poulet"
         ));
@@ -66,33 +67,22 @@ public class AnimalsController {
         navigateTo("/fxml/VisiteurProductionsView.fxml");
     }
 
-    /**
-     * Remonte jusqu'au StackPane contentArea du MainController
-     * et charge la vue cible — exactement comme MainController.loadView().
-     */
     private void navigateTo(String fxmlPath) {
         try {
-            // Cherche le StackPane parent (contentArea) dans la hiérarchie de scène
-            StackPane contentArea = (StackPane) animalsTable
-                    .getScene()
-                    .lookup("#contentArea");
-
+            StackPane contentArea = (StackPane) animalsTable.getScene().lookup("#contentArea");
             if (contentArea == null) {
-                System.out.println("❌ contentArea introuvable dans la scène.");
+                System.out.println("❌ contentArea introuvable.");
                 return;
             }
-
             java.net.URL resource = getClass().getResource(fxmlPath);
             if (resource == null) {
                 System.out.println("❌ FXML introuvable : " + fxmlPath);
                 return;
             }
-
             Parent view = FXMLLoader.load(resource);
             contentArea.getChildren().clear();
             contentArea.getChildren().add(view);
             System.out.println("✅ Navigation vers " + fxmlPath);
-
         } catch (Exception e) {
             System.out.println("❌ Erreur navigation : " + e.getMessage());
             e.printStackTrace();
@@ -187,38 +177,6 @@ public class AnimalsController {
         }
     }
 
-    @FXML
-    private void handleRefresh() {
-        loadAnimals();
-    }
-
-    @FXML
-    private void handleSearch() {
-        String search = searchField.getText().toLowerCase();
-        if (search.isEmpty()) {
-            animalsTable.setItems(animalsList);
-        } else {
-            ObservableList<Animals> filtered = animalsList.filtered(
-                    a -> a.getType().toLowerCase().contains(search) ||
-                            a.getBreed().toLowerCase().contains(search)
-            );
-            animalsTable.setItems(filtered);
-        }
-    }
-
-    @FXML
-    private void handleFilter() {
-        String filter = filterComboBox.getValue();
-        if ("Tous".equals(filter)) {
-            animalsTable.setItems(animalsList);
-        } else {
-            ObservableList<Animals> filtered = animalsList.filtered(
-                    a -> a.getType().equals(filter)
-            );
-            animalsTable.setItems(filtered);
-        }
-    }
-
     // ══════════════════════════════════════════════
     //  DIALOG ANIMAL
     // ══════════════════════════════════════════════
@@ -234,8 +192,9 @@ public class AnimalsController {
         grid.setHgap(10);
         grid.setVgap(10);
 
+        // ✅ MODIFIÉ : Liste sans "Cheval"
         ComboBox<String> typeField = new ComboBox<>(FXCollections.observableArrayList(
-                "Vache", "Chèvre", "Mouton", "Poulet", "Cheval"
+                "Vache", "Chèvre", "Mouton", "Poulet"
         ));
         TextField breedField = new TextField();
         DatePicker birthDatePicker = new DatePicker();
@@ -298,6 +257,38 @@ public class AnimalsController {
         });
 
         return dialog;
+    }
+
+    @FXML
+    private void handleRefresh() {
+        loadAnimals();
+    }
+
+    @FXML
+    private void handleSearch() {
+        String search = searchField.getText().toLowerCase();
+        if (search.isEmpty()) {
+            animalsTable.setItems(animalsList);
+        } else {
+            ObservableList<Animals> filtered = animalsList.filtered(
+                    a -> a.getType().toLowerCase().contains(search) ||
+                            a.getBreed().toLowerCase().contains(search)
+            );
+            animalsTable.setItems(filtered);
+        }
+    }
+
+    @FXML
+    private void handleFilter() {
+        String filter = filterComboBox.getValue();
+        if ("Tous".equals(filter)) {
+            animalsTable.setItems(animalsList);
+        } else {
+            ObservableList<Animals> filtered = animalsList.filtered(
+                    a -> a.getType().equals(filter)
+            );
+            animalsTable.setItems(filtered);
+        }
     }
 
     private Label makeErrLabel() {

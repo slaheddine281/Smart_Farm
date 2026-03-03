@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.StatistiquesController"
+            fitToWidth="true"
+            styleClass="content-area"
+            style="-fx-background-color: #F0F4F8; -fx-border-color: transparent;">
+
+    <VBox spacing="20" style="-fx-padding: 30px; -fx-background-color: #F0F4F8;">
+
+        <!-- ══ HEADER ══ -->
+        <HBox styleClass="card-header" alignment="CENTER_LEFT" spacing="15">
+            <Label text="📈  TABLEAU DE BORD — STATISTIQUES" styleClass="view-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🔄  Actualiser" onAction="#handleRefresh" styleClass="btn-refresh"/>
+        </HBox>
+
+        <!-- ══ KPI CARDS (ligne 1) ══ -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <VBox styleClass="stat-card-green" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="TOTAL PRODUCTIONS" styleClass="stat-label-white"/>
+                <Label fx:id="lblTotalProductions" text="0" styleClass="stat-value-white"/>
+                <Label text="enregistrements" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox styleClass="stat-card-blue" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="TOTAL ANIMAUX" styleClass="stat-label-white"/>
+                <Label fx:id="lblTotalAnimaux" text="0" styleClass="stat-value-white"/>
+                <Label text="dans la ferme" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="LAIT TOTAL (L)" styleClass="stat-label"/>
+                <Label fx:id="lblTotalLait" text="0.0" styleClass="stat-value"/>
+                <Label text="litres produits" style="-fx-text-fill: #BDC3C7; -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="ŒUFS TOTAL" styleClass="stat-label"/>
+                <Label fx:id="lblTotalOeufs" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #E67E22;"/>
+                <Label text="unités produites" style="-fx-text-fill: #BDC3C7; -fx-font-size: 11px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- ══ KPI CARDS (ligne 2) ══ -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="LAINE TOTAL (kg)" styleClass="stat-label"/>
+                <Label fx:id="lblTotalLaine" text="0.0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #9B59B6;"/>
+                <Label text="kg produits" style="-fx-text-fill: #BDC3C7; -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox styleClass="stat-card" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="VIANDE TOTAL (kg)" styleClass="stat-label"/>
+                <Label fx:id="lblTotalViande" text="0.0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #E74C3C;"/>
+                <Label text="kg produits" style="-fx-text-fill: #BDC3C7; -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox styleClass="stat-card-green" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="PRODUCTION / JOUR" styleClass="stat-label-white"/>
+                <Label fx:id="lblMoyenneJour" text="0.0" styleClass="stat-value-white"/>
+                <Label text="moyenne journalière" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 11px;"/>
+            </VBox>
+            <VBox styleClass="stat-card-blue" spacing="4" HBox.hgrow="ALWAYS">
+                <Label text="COMMANDES TOTALES" styleClass="stat-label-white"/>
+                <Label fx:id="lblTotalCommandes" text="0" styleClass="stat-value-white"/>
+                <Label text="commandes passées" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 11px;"/>
+            </VBox>
+        </HBox>
+
+        <!-- ══ LIGNE 3 : Top animaux + Santé ══ -->
+        <HBox spacing="15">
+
+            <!-- Top animaux producteurs -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 14px;
+                         -fx-padding: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 3);">
+                <Label text="🏆  TOP 5 ANIMAUX PRODUCTEURS" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+                <Separator/>
+                <TableView fx:id="topAnimauxTable" prefHeight="220" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                    <columns>
+                        <TableColumn fx:id="colTopRank"    text="#"           prefWidth="40"/>
+                        <TableColumn fx:id="colTopAnimal"  text="Animal"      prefWidth="160"/>
+                        <TableColumn fx:id="colTopType"    text="Type prod."  prefWidth="110"/>
+                        <TableColumn fx:id="colTopQty"     text="Quantité"    prefWidth="110"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Aucune donnée" style="-fx-text-fill: #BDC3C7;"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+            <!-- Santé des animaux -->
+            <VBox spacing="12" prefWidth="280"
+                  style="-fx-background-color: white; -fx-background-radius: 14px;
+                         -fx-padding: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 3);">
+                <Label text="❤️  ÉTAT DE SANTÉ" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+                <Separator/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="✅" style="-fx-font-size: 18px;"/>
+                    <VBox>
+                        <Label text="BONNE SANTÉ / EXCELLENTE" style="-fx-font-size: 10px; -fx-text-fill: #95A5A6; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblSanteBon" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #27AE60;"/>
+                    </VBox>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="⚠️" style="-fx-font-size: 18px;"/>
+                    <VBox>
+                        <Label text="SOUS SURVEILLANCE" style="-fx-font-size: 10px; -fx-text-fill: #95A5A6; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblSanteSurv" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #E67E22;"/>
+                    </VBox>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="🔴" style="-fx-font-size: 18px;"/>
+                    <VBox>
+                        <Label text="MALADE / TRAITEMENT" style="-fx-font-size: 10px; -fx-text-fill: #95A5A6; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblSanteMalade" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #E74C3C;"/>
+                    </VBox>
+                </HBox>
+                <Separator/>
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="📊" style="-fx-font-size: 18px;"/>
+                    <VBox>
+                        <Label text="TAUX DE BONNE SANTÉ" style="-fx-font-size: 10px; -fx-text-fill: #95A5A6; -fx-font-weight: bold;"/>
+                        <Label fx:id="lblTauxSante" text="0 %" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2980B9;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </HBox>
+
+        <!-- ══ LIGNE 4 : Productions par type + dernières productions ══ -->
+        <HBox spacing="15">
+
+            <!-- Productions par type d'animal -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 14px;
+                         -fx-padding: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 3);">
+                <Label text="🐄  PRODUCTION PAR TYPE D'ANIMAL" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+                <Separator/>
+                <TableView fx:id="prodParTypeTable" prefHeight="200" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                    <columns>
+                        <TableColumn fx:id="colPTAnimal"  text="Type animal"    prefWidth="130"/>
+                        <TableColumn fx:id="colPTProd"    text="Type prod."     prefWidth="110"/>
+                        <TableColumn fx:id="colPTQty"     text="Qté totale"     prefWidth="110"/>
+                        <TableColumn fx:id="colPTCount"   text="Nb entrées"     prefWidth="100"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Aucune donnée" style="-fx-text-fill: #BDC3C7;"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+            <!-- 5 dernières productions -->
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 14px;
+                         -fx-padding: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 3);">
+                <Label text="🕐  5 DERNIÈRES PRODUCTIONS" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+                <Separator/>
+                <TableView fx:id="dernieresProdsTable" prefHeight="200" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                    <columns>
+                        <TableColumn fx:id="colDPAnimal"  text="Animal"      prefWidth="130"/>
+                        <TableColumn fx:id="colDPType"    text="Type"        prefWidth="90"/>
+                        <TableColumn fx:id="colDPQty"     text="Quantité"    prefWidth="90"/>
+                        <TableColumn fx:id="colDPDate"    text="Date"        prefWidth="110"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Aucune donnée" style="-fx-text-fill: #BDC3C7;"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+        </HBox>
+
+        <!-- ══ LIGNE 5 : Chiffre d'affaires ══ -->
+        <HBox spacing="15">
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 14px;
+                         -fx-padding: 20px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 3);">
+                <Label text="💰  CHIFFRE D'AFFAIRES PAR PRODUIT" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2C3E50;"/>
+                <Separator/>
+                <TableView fx:id="caTable" prefHeight="180" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                    <columns>
+                        <TableColumn fx:id="colCAProd"   text="Produit"       prefWidth="150"/>
+                        <TableColumn fx:id="colCAQty"    text="Qté vendue"    prefWidth="130"/>
+                        <TableColumn fx:id="colCAPrix"   text="Prix unit. (€)" prefWidth="130"/>
+                        <TableColumn fx:id="colCATotal"  text="CA Total (€)"  prefWidth="150"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="Aucune commande encore" style="-fx-text-fill: #BDC3C7;"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+            <VBox spacing="12" prefWidth="260"
+                  style="-fx-background-color: linear-gradient(to bottom right, #27AE60, #1E8449);
+                         -fx-background-radius: 14px; -fx-padding: 25px;
+                         -fx-effect: dropshadow(gaussian, rgba(39,174,96,0.4), 14, 0, 0, 5);">
+                <Label text="💵  CA TOTAL" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: rgba(255,255,255,0.8);"/>
+                <Label fx:id="lblCaTotal" text="0.00 €" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Separator style="-fx-background-color: rgba(255,255,255,0.3);"/>
+                <Label text="📦  NB COMMANDES" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.7); -fx-font-weight: bold;"/>
+                <Label fx:id="lblNbCommandes" text="0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Separator style="-fx-background-color: rgba(255,255,255,0.3);"/>
+                <Label text="📊  PANIER MOYEN" style="-fx-font-size: 11px; -fx-text-fill: rgba(255,255,255,0.7); -fx-font-weight: bold;"/>
+                <Label fx:id="lblPanierMoyen" text="0.00 €" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            </VBox>
+        </HBox>
+
+    </VBox>
+</ScrollPane>

@@ -3,41 +3,43 @@ package entities;
 import java.time.LocalDate;
 
 /**
- * Classe Animals correspondant à la table 'animals' dans la base de données smart_farm
+ * Classe Animals - entité Animal de la ferme.
  */
 public class Animals {
 
-    // Attributs correspondant exactement à la table 'animals'
-    private int id;
-    private String type;           // Type d'animal (Vache, Chèvre, etc.)
-    private String breed;          // Race (Holstein, Alpine, etc.)
-    private LocalDate birthDate;   // Date de naissance (IMPORTANT : LocalDate !)
-    private String healthStatus;   // Statut de santé
+    private int       id;
+    private String    type;
+    private String    breed;
+    private LocalDate birthDate;
+    private String    healthStatus;
 
-    // ========== CONSTRUCTEURS ==========
+    // ══════════════════════════════════════════════
+    //  CONSTRUCTEURS
+    // ══════════════════════════════════════════════
 
-    // Constructeur vide
     public Animals() {
     }
 
-    // Constructeur SANS ID (pour les nouveaux animaux)
+    // Sans ID (création)
     public Animals(String type, String breed, LocalDate birthDate, String healthStatus) {
-        this.type = type;
-        this.breed = breed;
-        this.birthDate = birthDate;        // ✅ IMPORTANT : Assigner birthDate
+        this.type         = type;
+        this.breed        = breed;
+        this.birthDate    = birthDate;
         this.healthStatus = healthStatus;
     }
 
-    // Constructeur AVEC ID (pour les animaux existants)
+    // Avec ID (lecture BDD)
     public Animals(int id, String type, String breed, LocalDate birthDate, String healthStatus) {
-        this.id = id;
-        this.type = type;
-        this.breed = breed;
-        this.birthDate = birthDate;        // ✅ IMPORTANT : Assigner birthDate
+        this.id           = id;
+        this.type         = type;
+        this.breed        = breed;
+        this.birthDate    = birthDate;
         this.healthStatus = healthStatus;
     }
 
-    // ========== GETTERS ET SETTERS ==========
+    // ══════════════════════════════════════════════
+    //  GETTERS / SETTERS
+    // ══════════════════════════════════════════════
 
     public int getId() {
         return id;
@@ -63,12 +65,10 @@ public class Animals {
         this.breed = breed;
     }
 
-    // ✅ GETTER BIRTHDATE - Retourne LocalDate
     public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    // ✅ SETTER BIRTHDATE - Accepte LocalDate
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
@@ -81,7 +81,9 @@ public class Animals {
         this.healthStatus = healthStatus;
     }
 
-    // ========== TOSTRING ==========
+    // ══════════════════════════════════════════════
+    //  TOSTRING
+    // ══════════════════════════════════════════════
 
     @Override
     public String toString() {

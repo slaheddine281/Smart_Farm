@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Service pour gérer les opérations CRUD sur les animaux
+ * Service pour gérer les opérations CRUD sur les animaux.
+ * ✅ CORRIGÉ : Connexion non-static pour éviter les NullPointerException
  */
 public class Serviceanimals implements IService<Animals> {
 
-    private static Connection connection;
+    // ✅ CORRECTION : Enlever "static" pour éviter les problèmes d'initialisation
+    private final Connection connection;
 
     public Serviceanimals() {
         connection = MyDatabase.getInstance().getConnection();
@@ -21,13 +23,11 @@ public class Serviceanimals implements IService<Animals> {
 
     @Override
     public void ajouter(Animals animal) throws SQLException {
-        // ✅ Utilisation de PreparedStatement pour éviter les injections SQL
         String req = "INSERT INTO animals (type, breed, birth_date, health_status) VALUES (?, ?, ?, ?)";
 
         PreparedStatement ps = connection.prepareStatement(req);
         ps.setString(1, animal.getType());
         ps.setString(2, animal.getBreed());
-        // ✅ CORRECTION : Enlever .toLocalDate()
         ps.setDate(3, Date.valueOf(animal.getBirthDate()));
         ps.setString(4, animal.getHealthStatus());
 
@@ -42,7 +42,6 @@ public class Serviceanimals implements IService<Animals> {
         PreparedStatement ps = connection.prepareStatement(req);
         ps.setString(1, animal.getType());
         ps.setString(2, animal.getBreed());
-        // ✅ CORRECTION : Enlever .toLocalDate()
         ps.setDate(3, Date.valueOf(animal.getBirthDate()));
         ps.setString(4, animal.getHealthStatus());
         ps.setInt(5, animal.getId());

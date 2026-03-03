@@ -28,8 +28,23 @@ public class MainController {
     @FXML
     public void showProductionsView() {
         System.out.println("→ Chargement ProductionsView");
-        loadView("/fxml/ProductionsView.fxml");
+        loadView("/fxml/AnimalProductionsView.fxml");
         statusLabel.setText("Vue Productions");
+    }
+
+
+    @FXML
+    public void showRapportView() {
+        System.out.println("→ Chargement RapportView");
+        loadView("/fxml/RapportView.fxml");
+        if (statusLabel != null) statusLabel.setText("Rapport IA");
+    }
+
+    @FXML
+    public void showStatistiquesView() {
+        System.out.println("→ Chargement StatistiquesView");
+        loadView("/fxml/StatistiquesView.fxml");
+        statusLabel.setText("Vue Statistiques");
     }
 
     private void loadView(String fxmlPath) {
@@ -53,7 +68,8 @@ public class MainController {
             System.out.println("❌ ERREUR: " + e.getMessage());
             System.out.println("❌ CAUSE: " + e.getCause());
             e.printStackTrace();
-            statusLabel.setText("Erreur: " + e.getMessage());
+            if (statusLabel != null)
+                statusLabel.setText("Erreur chargement vue");
         }
     }
 }

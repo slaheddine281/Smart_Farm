@@ -7,8 +7,8 @@ import utils.MyDatabase;
 import java.sql.*;
 
 /**
- * Service pour enregistrer une commande en BDD
- * et décrémenter la quantité dans animal_production.
+ * Service commande — enregistre en BDD, décrémente le stock,
+ * et enregistre l'ID Stripe après paiement confirmé.
  */
 public class ServiceCommande {
 
@@ -16,31 +16,29 @@ public class ServiceCommande {
 
     public ServiceCommande() {
         conn = MyDatabase.getInstance().getConnection();
+        if (conn == null) throw new RuntimeException("Connexion MySQL impossible.");
     }
 
     // ══════════════════════════════════════════════
-    //  ENREGISTRER UNE COMMANDE COMPLÈTE
+    //  ENREGISTRER UNE COMMANDE (avec stripe_id)
     // ══════════════════════════════════════════════
 
     /**
-     * 1. Insère l'entête dans `commandes`
+     * Enregistre la commande complète dans une transaction :
+     * 1. Insère l'entête dans `commandes` avec le stripeId
      * 2. Insère chaque ligne dans `commande_items`
-     * 3. Décrémente la quantité dans `animal_production`
-     * Tout est fait dans une transaction — si une étape échoue, tout est annulé.
+     * 3. Décrémente le stock dans `animal_production`
      */
-    public void enregistrerCommande(Commande commande) throws SQLException {
+    public void enregistrerCommande(Commande commande, String stripeId) throws SQLException {
         conn.setAutoCommit(false);
         try {
-            // ── Étape 1 : Insérer l'entête commande ──
-            int commandeId = insertCommande(commande);
-
-            // ── Étape 2 : Insérer les items + décrémenter stock ──
+            int commandeId = insertCommande(commande, stripeId);
             for (CommandeItem item : commande.getItems()) {
                 insertCommandeItem(commandeId, item);
                 decrementerProduction(item.getProductionId(), item.getQuantiteAchat());
             }
-
             conn.commit();
+            System.out.println("✅ Commande #" + commandeId + " enregistrée. Stripe ID: " + stripeId);
         } catch (SQLException e) {
             conn.rollback();
             throw e;
@@ -49,19 +47,24 @@ public class ServiceCommande {
         }
     }
 
-    // ── Insérer entête ───────────────────────────
-    private int insertCommande(Commande commande) throws SQLException {
-        String sql = "INSERT INTO commandes (visiteur_nom, date_commande, total_prix, statut) " +
-                "VALUES (?, NOW(), ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, commande.getVisiteurNom());
-            ps.setDouble(2, commande.getTotalPrix());
-            ps.setString(3, commande.getStatut());
-            ps.executeUpdate();
+    /** Surcharge sans stripeId pour compatibilité */
+    public void enregistrerCommande(Commande commande) throws SQLException {
+        enregistrerCommande(commande, null);
+    }
 
+    // ── Insérer entête ───────────────────────────
+    private int insertCommande(Commande commande, String stripeId) throws SQLException {
+        String sql = "INSERT INTO commandes (visiteur_nom, date_commande, total_prix, statut, stripe_id) " +
+                "VALUES (?, NOW(), ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, commande.getVisiteurNom() != null ? commande.getVisiteurNom() : "Visiteur");
+            ps.setDouble(2, commande.getTotalPrix());
+            ps.setString(3, "Payée");
+            ps.setString(4, stripeId);
+            ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) return rs.getInt(1);
-            throw new SQLException("Impossible de récupérer l'ID de la commande.");
+            throw new SQLException("Impossible de récupérer l'ID commande.");
         }
     }
 
@@ -91,13 +94,7 @@ public class ServiceCommande {
         }
     }
 
-    // ══════════════════════════════════════════════
-    //  VÉRIFIER STOCK DISPONIBLE
-    // ══════════════════════════════════════════════
-
-    /**
-     * Retourne la quantité disponible pour une production donnée.
-     */
+    // ── Vérifier stock ──────────────────────────
     public double getQuantiteDisponible(int productionId) throws SQLException {
         String sql = "SELECT quantity FROM animal_production WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {

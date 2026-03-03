@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controllers.RapportController"
+      styleClass="view-container" spacing="20">
+
+    <!-- HEADER -->
+    <HBox styleClass="card-header" alignment="CENTER_LEFT" spacing="15">
+        <Label text="Rapport PDF — Animaux et Productions" styleClass="view-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- DESCRIPTION -->
+    <VBox style="-fx-background-color:white;-fx-background-radius:14;
+                 -fx-padding:24;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),10,0,0,3);"
+          spacing="10">
+        <Label text="Ce rapport PDF contient :"
+               style="-fx-font-size:14px;-fx-font-weight:bold;-fx-text-fill:#2C3E50;"/>
+        <Label text="  - Liste complete de tous les animaux avec leur etat de sante"
+               style="-fx-font-size:12px;-fx-text-fill:#5D6D7E;"/>
+        <Label text="  - Tableau des productions du mois en cours"
+               style="-fx-font-size:12px;-fx-text-fill:#5D6D7E;"/>
+        <Label text="  - Statistiques globales par type de production"
+               style="-fx-font-size:12px;-fx-text-fill:#5D6D7E;"/>
+        <Label text="  - Mise en evidence des animaux a surveiller"
+               style="-fx-font-size:12px;-fx-text-fill:#E67E22;-fx-font-weight:bold;"/>
+    </VBox>
+
+    <!-- BOUTON -->
+    <VBox style="-fx-background-color:white;-fx-background-radius:14;
+                 -fx-padding:30;-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.07),10,0,0,3);"
+          spacing="16" alignment="CENTER">
+
+        <Button fx:id="btnGenerer"
+                text="Generer le rapport PDF"
+                onAction="#handleGenererRapport"
+                style="-fx-background-color:linear-gradient(to bottom,#27AE60,#1E8449);
+                       -fx-text-fill:white;-fx-font-size:15px;-fx-font-weight:bold;
+                       -fx-padding:16 40;-fx-background-radius:12;-fx-cursor:hand;
+                       -fx-effect:dropshadow(gaussian,rgba(39,174,96,0.5),12,0,0,4);"/>
+
+        <Label fx:id="lblStatut"
+               text="Cliquez pour generer le rapport"
+               style="-fx-font-size:12px;-fx-text-fill:#95A5A6;"/>
+
+        <ProgressBar fx:id="progressBar" prefWidth="380" prefHeight="10"
+                     style="-fx-accent:#27AE60;"/>
+    </VBox>
+
+    <!-- RESULTAT -->
+    <VBox fx:id="cardResultat" spacing="14"
+          style="-fx-background-color:#E8F8F0;-fx-background-radius:14;-fx-padding:24;
+                 -fx-border-color:#27AE60;-fx-border-width:2;-fx-border-radius:14;">
+
+        <Label text="Rapport genere avec succes !"
+               style="-fx-font-size:15px;-fx-font-weight:bold;-fx-text-fill:#1E8449;"/>
+
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Label text="Fichier :"
+                   style="-fx-font-weight:bold;-fx-text-fill:#2C3E50;-fx-font-size:12px;"/>
+            <Label fx:id="lblCheminPDF" text=""
+                   style="-fx-text-fill:#2980B9;-fx-font-size:11px;" wrapText="true"/>
+        </HBox>
+
+        <Button fx:id="btnOuvrir"
+                text="Ouvrir le PDF"
+                onAction="#handleOuvrirPDF"
+                style="-fx-background-color:linear-gradient(to bottom,#2980B9,#1F618D);
+                       -fx-text-fill:white;-fx-font-weight:bold;-fx-font-size:13px;
+                       -fx-padding:12 28;-fx-background-radius:10;-fx-cursor:hand;"/>
+    </VBox>
+
+</VBox>
