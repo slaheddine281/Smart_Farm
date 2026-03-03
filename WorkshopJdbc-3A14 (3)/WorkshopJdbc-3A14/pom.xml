@@ -29,6 +29,20 @@
             <version>21.0.2</version>
         </dependency>
 
+        <!-- Twilio API pour WhatsApp -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>9.12.0</version>
+        </dependency>
+
+        <!-- Jakarta Annotation (pour @PostConstruct) -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
         <!-- MySQL -->
         <dependency>
             <groupId>mysql</groupId>
@@ -41,6 +55,53 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.5</version>
+        </dependency>
+
+        <!-- Google Calendar API -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-calendar</artifactId>
+            <version>v3-rev20230825-2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+            <version>1.34.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.auth</groupId>
+            <artifactId>google-auth-library-oauth2-http</artifactId>
+            <version>1.21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-gson</artifactId>
+            <version>1.43.3</version>
+        </dependency>
+
+        <!-- ✅ JUnit 5 pour les tests (NOUVEAU) -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.9.3</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -56,21 +117,18 @@
                 </configuration>
             </plugin>
 
-            <!-- ✅ PLUGIN JAVAFX avec DEUX CONFIGURATIONS -->
+            <!-- Plugin JavaFX -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <executions>
-                    <!-- Configuration 1 : BACKOFFICE ADMIN -->
                     <execution>
                         <id>admin</id>
                         <configuration>
                             <mainClass>mains.MainFX</mainClass>
                         </configuration>
                     </execution>
-
-                    <!-- Configuration 2 : FRONTEND CLIENT -->
                     <execution>
                         <id>client</id>
                         <configuration>
@@ -78,13 +136,10 @@
                         </configuration>
                     </execution>
                 </executions>
-                
-                <!-- Configuration par défaut (si vous faites juste "mvn javafx:run") -->
                 <configuration>
                     <mainClass>mains.MainFX</mainClass>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

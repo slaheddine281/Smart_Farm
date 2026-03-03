@@ -15,38 +15,56 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AjouterTask implements Initializable {
 
+    // ─────────────────────────────────────────────────────────────
+    // ✅ CHAMPS FXML
+    // ─────────────────────────────────────────────────────────────
     @FXML private ComboBox<Employee> cmbEmployee;
     @FXML private TextArea txtDescription;
     @FXML private DatePicker datePicker;
+    @FXML private ComboBox<String> cmbEventType;
 
+    // ─────────────────────────────────────────────────────────────
+    // ✅ SERVICES
+    // ─────────────────────────────────────────────────────────────
     private final ServiceEmployee employeeService = new ServiceEmployee();
     private final ServiceEmployeeTask taskService = new ServiceEmployeeTask();
+    private static final Logger LOGGER = Logger.getLogger(AjouterTask.class.getName());
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         loadEmployees();
-        
-        // ✅ Définir la date par défaut à aujourd'hui
+        setupEventTypeComboBox();
         datePicker.setValue(LocalDate.now());
-        
-        // ✅ BLOQUER LES DATES PASSÉES
         setupDateValidation();
     }
 
+    // ─────────────────────────────────────────────────────────────
+    private void setupEventTypeComboBox() {
+        cmbEventType.getItems().addAll(
+                "🐾 Soin Animal",
+                "🏥 Traitement Vétérinaire",
+                "🌾 Tâche Agricole",
+                "👷 Shift Employé",
+                "📋 Général"
+        );
+        cmbEventType.setValue("📋 Général");
+        cmbEventType.setTooltip(new Tooltip("Sélectionnez le type d'événement pour Google Calendar"));
+    }
+
+    // ─────────────────────────────────────────────────────────────
     private void setupDateValidation() {
-        // Désactiver visuellement les dates passées dans le calendrier
-        datePicker.setDayCellFactory(new Callback<DatePicker, DateCell>() {
+        datePicker.setDayCellFactory(new Callback<>() {
             @Override
             public DateCell call(DatePicker param) {
                 return new DateCell() {
                     @Override
                     public void updateItem(LocalDate date, boolean empty) {
                         super.updateItem(date, empty);
-                        
-                        // Désactiver toutes les dates avant aujourd'hui
                         LocalDate today = LocalDate.now();
                         if (date.isBefore(today)) {
                             setDisable(true);
@@ -57,127 +75,152 @@ public class AjouterTask implements Initializable {
             }
         });
 
-        // ✅ Validation supplémentaire au changement de valeur
         datePicker.valueProperty().addListener((obs, oldDate, newDate) -> {
             if (newDate != null && newDate.isBefore(LocalDate.now())) {
-                showAlert(Alert.AlertType.ERROR, "Invalid Date", 
-                    "You cannot select a date in the past!\nPlease select today or a future date.");
+                showAlert(Alert.AlertType.ERROR, "Invalid Date",
+                        "You cannot select a date in the past!\nPlease select today or a future date.");
                 datePicker.setValue(LocalDate.now());
             }
         });
     }
 
+    // ─────────────────────────────────────────────────────────────
     private void loadEmployees() {
         try {
             List<Employee> employees = employeeService.recuperer();
             cmbEmployee.getItems().addAll(employees);
-            
-            // Afficher "Nom Prénom (Position)"
-            cmbEmployee.setCellFactory(param -> new ListCell<Employee>() {
+
+            cmbEmployee.setCellFactory(param -> new ListCell<>() {
                 @Override
                 protected void updateItem(Employee emp, boolean empty) {
                     super.updateItem(emp, empty);
                     if (empty || emp == null) {
                         setText(null);
                     } else {
-                        setText(emp.getFirstName() + " " + emp.getLastName() + 
-                               " (" + emp.getPosition() + ")");
+                        setText(emp.getFirstName() + " " + emp.getLastName() + " (" + emp.getPosition() + ")");
                     }
                 }
             });
-            
-            cmbEmployee.setButtonCell(new ListCell<Employee>() {
+
+            cmbEmployee.setButtonCell(new ListCell<>() {
                 @Override
                 protected void updateItem(Employee emp, boolean empty) {
                     super.updateItem(emp, empty);
                     if (empty || emp == null) {
                         setText("Select an employee...");
                     } else {
-                        setText(emp.getFirstName() + " " + emp.getLastName() + 
-                               " (" + emp.getPosition() + ")");
+                        setText(emp.getFirstName() + " " + emp.getLastName() + " (" + emp.getPosition() + ")");
                     }
                 }
             });
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", 
-                "Failed to load employees: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load employees: " + e.getMessage());
         }
     }
 
+    // ─────────────────────────────────────────────────────────────
     @FXML
     private void addTask() {
-        // Validation de l'employé
+        // Validation employé
         if (cmbEmployee.getValue() == null) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", 
-                "Please select an employee!");
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Please select an employee!");
             return;
         }
 
-        // Validation de la description
+        // Validation description
         String description = txtDescription.getText().trim();
         if (description.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", 
-                "Please enter a task description!");
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Please enter a task description!");
             return;
         }
-        
         if (description.length() < 5) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", 
-                "Task description must be at least 5 characters long!");
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Task description must be at least 5 characters long!");
             return;
         }
 
-        // Validation de la date
+        // Validation date
         LocalDate selectedDate = datePicker.getValue();
         if (selectedDate == null) {
-            showAlert(Alert.AlertType.WARNING, "Validation Error", 
-                "Please select a date!");
+            showAlert(Alert.AlertType.WARNING, "Validation Error", "Please select a date!");
             return;
         }
-
-        // ✅ VALIDATION FINALE : Vérifier que la date n'est pas dans le passé
         if (selectedDate.isBefore(LocalDate.now())) {
-            showAlert(Alert.AlertType.ERROR, "Invalid Date", 
-                "Cannot create a task with a past date!\n" +
-                "Selected: " + selectedDate + "\n" +
-                "Today: " + LocalDate.now());
+            showAlert(Alert.AlertType.ERROR, "Invalid Date",
+                    "Cannot create a task with a past date!\nSelected: " + selectedDate + "\nToday: " + LocalDate.now());
             return;
         }
 
-        // Créer la tâche
         try {
             Employee selectedEmployee = cmbEmployee.getValue();
-            EmployeeTask task = new EmployeeTask(
-                selectedEmployee.getId(),
-                description,
-                selectedDate
+            EmployeeTask task = new EmployeeTask(selectedEmployee.getId(), description, selectedDate);
+            task.setEmployeeName(selectedEmployee.getFirstName() + " " + selectedEmployee.getLastName());
+            task.setEmployeePosition(selectedEmployee.getPosition());
+            task.setRating(0);
+
+            String eventType = getEventTypeKey(cmbEventType.getValue());
+
+            // ✅ TOUJOURS ENVOYER À VOTRE NUMÉRO POUR LES TESTS
+            String employeePhone = "+21650093975";  // ← VOTRE numéro WhatsApp vérifié
+            String employeeName = selectedEmployee.getFirstName() + " " + selectedEmployee.getLastName();
+
+            // ✅ APPEL À LA MÉTHODE AVEC WHATSAPP + CALENDAR
+            taskService.ajouterAvecCalendarEtWhatsApp(
+                    task,
+                    eventType,
+                    employeePhone,    // Toujours votre numéro pour tester
+                    employeeName      // Nom complet de l'employé
             );
-            task.setRating(0); // Rating par défaut = 0 (non noté)
-            
-            taskService.ajouter(task);
-            
-            showAlert(Alert.AlertType.INFORMATION, "Success", 
-                "Task added successfully!\n\n" +
-                "Employee: " + selectedEmployee.getFirstName() + " " + selectedEmployee.getLastName() + "\n" +
-                "Date: " + selectedDate);
-            
+
+            // ✅ MESSAGE DE SUCCÈS MIS À JOUR
+            String calendarMsg = taskService.isCalendarAvailable()
+                    ? "📅 Événement créé dans Google Calendar !"
+                    : "⚠️ Calendar indisponible";
+
+            String whatsappMsg = taskService.isWhatsAppAvailable()
+                    ? "📱 Notification WhatsApp envoyée !"
+                    : "⚠️ WhatsApp indisponible";
+
+            showAlert(Alert.AlertType.INFORMATION, "Success",
+                    "Task added successfully!\n\n" +
+                            "👤 Employee: " + employeeName + "\n" +
+                            "📝 Task: " + description + "\n" +
+                            "📅 Date: " + selectedDate + "\n" +
+                            "🔖 Type: " + cmbEventType.getValue() + "\n\n" +
+                            calendarMsg + "\n" +
+                            whatsappMsg);
+
+            LOGGER.info("✅ Tâche ajoutée : " + task.getTaskDescription() + " pour " + employeeName);
             clearForm();
             closeWindow();
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Database Error", 
-                "Failed to add task: " + e.getMessage());
+
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "❌ Erreur lors de l'ajout : " + e.getMessage(), e);
+            String msg = e.getMessage() != null ? e.getMessage() : "An unexpected error occurred";
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to add task:\n" + msg);
         }
     }
 
+    // ─────────────────────────────────────────────────────────────
+    private String getEventTypeKey(String displayValue) {
+        if (displayValue == null) return "general";
+        return switch (displayValue) {
+            case "🐾 Soin Animal" -> "soin_animal";
+            case "🏥 Traitement Vétérinaire" -> "traitement_veterinaire";
+            case "🌾 Tâche Agricole" -> "tache_agricole";
+            case "👷 Shift Employé" -> "shift_employe";
+            default -> "general";
+        };
+    }
+
+    // ─────────────────────────────────────────────────────────────
     @FXML
     private void clearForm() {
         cmbEmployee.setValue(null);
         txtDescription.clear();
-        datePicker.setValue(LocalDate.now()); // Reset à aujourd'hui
+        datePicker.setValue(LocalDate.now());
+        cmbEventType.setValue("📋 Général");
     }
 
     @FXML
@@ -195,6 +238,7 @@ public class AjouterTask implements Initializable {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.initOwner(cmbEmployee.getScene().getWindow());
         alert.showAndWait();
     }
 }
