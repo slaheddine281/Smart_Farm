@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="468.0" prefWidth="426.0" spacing="10" style="-fx-padding:20;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.AjouterUser">
+
+   <Label style="-fx-font-size:18; -fx-font-weight:bold;" />
+
+   <TextField fx:id="txtUsername" promptText="Nom d'utilisateur" />
+   <TextField fx:id="txtEmail" promptText="Email" />
+   <PasswordField fx:id="txtPassword" promptText="Mot de passe" />
+   <PasswordField fx:id="txtConfirmPassword" promptText="Confirmer mot de passe" />
+
+   <ComboBox fx:id="comboRole" promptText="Choisir un rôle" />
+
+   <ImageView fx:id="imageView" fitHeight="100" fitWidth="100" preserveRatio="true" />
+
+   <Button onAction="#choisirPhoto" text="Choisir Photo" />
+
+   <Button onAction="#addUser" style="-fx-background-color:green; -fx-text-fill:white;" text="Ajouter" />
+
+</VBox>

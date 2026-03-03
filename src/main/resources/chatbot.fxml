@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controllers.ChatbotController"
+            fx:id="rootPane"
+            prefWidth="800" prefHeight="600"
+            stylesheets="@chatbot.css">
+
+    <top>
+        <HBox styleClass="header">
+            <Label text="🌾 Smart Farm Assistant" styleClass="header-title"/>
+            <ToggleButton fx:id="darkModeToggle"
+                          text="🌙"
+                          onAction="#toggleDarkMode"
+                          styleClass="dark-toggle"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" styleClass="chat-scroll">
+            <VBox fx:id="chatContainer" spacing="12" styleClass="chat-container"/>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" styleClass="input-area">
+            <Button text="📎" onAction="#uploadImage" styleClass="icon-button"/>
+            <TextField fx:id="txtMessage"
+                       promptText="Tapez votre message..."
+                       HBox.hgrow="ALWAYS"
+                       styleClass="message-field"/>
+            <Button text="🎤" onAction="#startVoiceInput" styleClass="icon-button"/>
+            <Button text="Envoyer" onAction="#sendMessage" styleClass="send-button"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
